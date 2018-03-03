@@ -19,4 +19,4 @@ DRC de bajo %CPU basado en Ecasound.
 colgar aquí
 - las configuraciones empleadas
 - algunos scripts ad-hoc
-- la istalación de software bluetooth y librespot
+- la instalación de software bluetooth y librespot
