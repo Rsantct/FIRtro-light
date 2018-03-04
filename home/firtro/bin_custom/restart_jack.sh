@@ -88,13 +88,15 @@ sleep 1
 
 ### Arranca JACK
 cmd="jackd "$new_jack_options" -d"$system_card" -r"$fs
-echo "\n--- Arrancando JACK:"
+echo ""
+echo "--- Arrancando JACK:"
 echo $cmd
 $cmd &
 sleep 3
 
 ### Arranca Brutefir con el nuevo archivo brutefir_config
-echo "\n--- Arrancando BRUTEFIR:"
+echo ""
+echo "--- Arrancando BRUTEFIR:"
 echo $brutefir_path $newBconfig
 $brutefir_path $newBconfig &
 sleep 3
@@ -102,7 +104,8 @@ sleep 3
 ### Arranca Ecasound
 if [[ $load_ecasound == "True" ]]; then
     cmd=$ecasound_path" -q --server -s:"$ecsFile
-    echo "\n--- Arrancando ECASOUND:"
+    echo ""
+    echo "--- Arrancando ECASOUND:"
     echo $cmd
     $cmd &
     sleep 1
