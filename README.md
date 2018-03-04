@@ -21,7 +21,7 @@ Instalar FIRtro https://github.com/AudioHumLab/FIRtro/wiki
 
 Adaptar a FIRtro-Light, ver `doc/FIRtro-Light.pdf`
 
-# Credits
+# Créditos
 
 FIRtro https://github.com/AudioHumLab/FIRtro
 
