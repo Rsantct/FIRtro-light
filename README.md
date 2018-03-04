@@ -1,7 +1,8 @@
 # FIRtro-light
+
 Un FIRtro simplificado para máquinas pequeñas
 
-Se pretende que sirva en un salón para oir la TV y para reproducir Spotify en modo black-box controlado desde un teléfono o tablet, con las ventajas de FIRtro: control remoto, volumen con loudness, DRC.
+Con motivo de un encargo, se pretende que sirva en un salón para oir la TV y para reproducir Spotify en modo black-box controlado desde un teléfono o tablet, con las ventajas de FIRtro: control remoto, volumen con loudness, DRC.
 
 Sin selector de entradas
 
@@ -14,9 +15,13 @@ Se descarta el uso directo de Brutefir sobre ALSA (sin Jack), el pequeño consum
 
 DRC de bajo %CPU basado en Ecasound.
 
+# Instalación
 
-## TO DO
-colgar aquí
-- las configuraciones empleadas
-- algunos scripts ad-hoc
-- la instalación de software bluetooth y librespot
+Ver en `doc/`
+
+# Credits
+
+FIRtro https://github.com/AudioHumLab/FIRtro
+Raspotify https://github.com/dtcooper/raspotify
+bluealsa https://github.com/Arkq/bluez-alsa
+
