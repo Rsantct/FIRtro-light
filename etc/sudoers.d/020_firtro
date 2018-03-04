@@ -1,0 +1,5 @@
+# Permisos especiales en FIRtro
+firtro  ALL=NOPASSWD: /sbin/poweroff
+firtro  ALL=NOPASSWD: /sbin/shutdown
+firtro  ALL=NOPASSWD: /sbin/reboot
+firtro  ALL=NOPASSWD: /bin/systemctl
