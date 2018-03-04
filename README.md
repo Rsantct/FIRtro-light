@@ -17,7 +17,7 @@ DRC de bajo %CPU basado en Ecasound.
 
 # Instalación
 
-Ver en `doc/`
+Ver en `doc/FIRtro-Light.pdf`
 
 # Credits
 
