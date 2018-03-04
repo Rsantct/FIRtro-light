@@ -1,0 +1,23 @@
+...
+...
+
+
+# Parches para este FIRtro
+su -l firtro -c "/home/firtro/bin_custom/patch_firtro.sh"
+
+# FIRtro
+su -l firtro -c "/home/firtro/bin/initfirtro.py "
+
+# Por si acaso ajustamos la tarjeta de sonido
+# (aunque FIRtro debería tenerla bien configurada)
+su -l firtro -c "/home/pi/bin_cirrus/Playback_to_Lineout.sh"
+su -l firtro -c "/home/pi/bin_cirrus/Record_from_Linein.sh"
+
+# Cliente Spotify via ALSA
+su -l firtro -c "/home/firtro/bin_custom/librespot_watchdog.sh &"
+
+# Receptor Bluetooth via ALSA
+su -l firtro -c "/home/firtro/bin_custom/escuchaBT.py &"
+
+
+exit 0
