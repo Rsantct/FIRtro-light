@@ -22,6 +22,8 @@ Ver en `doc/`
 # Credits
 
 FIRtro https://github.com/AudioHumLab/FIRtro
+
 Raspotify https://github.com/dtcooper/raspotify
+
 bluealsa https://github.com/Arkq/bluez-alsa
 
