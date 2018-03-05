@@ -89,13 +89,13 @@ sleep 1
 ### Arranca JACK
 cmd="jackd "$new_jack_options" -d"$system_card" -r"$fs
 echo ""
-echo "--- Esperando a  JACK:"
+echo "--- Esperando a JACK:"
 echo $cmd
 $cmd &
 # Esperamos hasta 10s a que Jack esté disponible
 i=(0)
 while (( $i <= 10 )); do
-    tmp=$(jack_lsp)
+    tmp=$(jack_lsp system)
     if [[ $tmp ]]; then
         break
     fi
@@ -106,7 +106,7 @@ if (( i >= 10 )); then
     echo ""
     echo "(!) ERROR arrancando JACK."
     echo ""
-    exit 0
+    exit -1
 fi
 
 ### Arranca Brutefir con el nuevo archivo brutefir_config
@@ -114,7 +114,23 @@ echo ""
 echo "--- Arrancando BRUTEFIR:"
 echo $brutefir_path $newBconfig
 $brutefir_path $newBconfig &
-sleep 3
+# Esperamos hasta 5s a que Brutefir esté disponible
+i=(0)
+while (( $i <= 5 )); do
+    tmp=$(jack_lsp brutefir)
+    if [[ $tmp ]]; then
+        break
+    fi
+    ((i++))
+    sleep 1
+done
+if (( i >= 5 )); then
+    echo ""
+    echo "(!) ERROR arrancando BRUTEFIR."
+    echo ""
+    exit -1
+fi
+
 
 ### Arranca Ecasound
 if [[ $load_ecasound == "True" ]]; then
@@ -124,4 +140,20 @@ if [[ $load_ecasound == "True" ]]; then
     echo $cmd
     $cmd &
     sleep 1
+    # Esperamos hasta 5s a que Ecasound esté disponible
+    i=(0)
+    while (( $i <= 5 )); do
+        tmp=$(jack_lsp ecasound)
+        if [[ $tmp ]]; then
+            break
+        fi
+        ((i++))
+        sleep 1
+    done
+    if (( i >= 5 )); then
+        echo ""
+        echo "(!) ERROR arrancando ECASOUND."
+        echo ""
+        exit -1
+    fi
 fi
