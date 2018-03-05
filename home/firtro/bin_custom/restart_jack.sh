@@ -104,7 +104,7 @@ while (( $i <= 10 )); do
 done
 if (( i >= 10 )); then
     echo ""
-    echo "(!) error arrancando JACK."
+    echo "(!) ERROR arrancando JACK."
     echo ""
     exit 0
 fi
