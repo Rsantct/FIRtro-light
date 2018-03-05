@@ -1,32 +1,33 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-    A dB level control for the cirrus logic audio card (sndrpiwsp)
+    alsamixer levels control is tricky on Cirrus Logic / Wolfson Audio cards.
+
+    This is a dB level control for them.
 
     Usage:
-        clac_dBlevel.py [-cap] (+/-)xxdB | xxdB(+/-) | off | on
-                       -cap         for capture level adjustement
+
+        clac_dBlevel.py [-cap] [-head] (+/-)xxdB | xxdB(+/-) | off | on
+
                         xxdB(+/-)   applies relative level
                         off/on      mute/unmute
-    Note:
-        amixer dB behavior is buggy, we try to deal with it here :-)
+                        -cap        will adjust capture level
+                        -head       adjust Headphones-Out (default Line-Out)
+
 """
 import subprocess as sp
 import sys
 
-#card = "sndrpiwsp"
+#card = "sndrpiwsp" # Con el driver actual con kernel 4.x  la tarjeta se llama 'RPiCirrus'
+                    # incluso para la tarjeta  Wolfson Audio Card
 card = "RPiCirrus"
 
-#/////////////////////////////////////////////////////////////////////////////////
-# NOTA: salida de AURICULARES comentada no se toca, solo se actuará sobre LINE OUT.
-
-salidas =  {"LineOut":      ["'HPOUT2 Digital'"]}
-#            "Headphones":   ["'HPOUT1 Digital'"]}
+salidas =  {"LineOut":      ["'HPOUT2 Digital'"],
+            "Headphones":   ["'HPOUT1 Digital'"]}
 
 entradas = {"Headset":      ["'IN1L Digital'","'IN1R Digital'"],
             "DMIC":         ["'IN2L Digital'","'IN2R Digital'"],
             "LineIn":       ["'IN3L Digital'","'IN3R Digital'"]}
-#\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
 def dBcompensate(x):
@@ -35,6 +36,9 @@ def dBcompensate(x):
     return str(tmp)[:5] + "dB" + x[-1]
 
 def setDBs(vol, mode):
+    # INFO:
+    # amixer dB behavior is buggy, we try to deal with it here.
+
     if vol[-1] in ("+","-"):
         # los incrementos de dB son ejecutados por amixer al doble de su valor
         # sin embargo los ajustes absolutos son ejecutados con normalidad ¿!?
@@ -64,11 +68,12 @@ def setLevel(x, mode, quiet=True):
                 sp.call(cmd, shell=True)
     else:
         for salida in salidas:
-            if not quiet:
-                print "\n---", salida + ":"
-            for item in salidas[salida]:
-                cmd = "amixer" + " -q"*quiet + " -c " + card + " sset " + item + " " + x
-                sp.call(cmd, shell=True)
+            if salida == salida_selecc:
+                if not quiet:
+                    print "\n---", salida + ":"
+                for item in salidas[salida]:
+                    cmd = "amixer" + " -q"*quiet + " -c " + card + " sset " + item + " " + x
+                    sp.call(cmd, shell=True)
 
 def getVol(mode="playback"):
     if mode == "capture":
@@ -85,26 +90,40 @@ def getVol(mode="playback"):
                 sp.call(cmd, shell=True)
 
 if __name__ == "__main__":
-    mode = "playback"
-    vol     = ''
-    onoff   = ''
+
+    mode          = "playback"
+    vol           = ''
+    onoff         = ''
+    salida_selecc = "LineOut"
+
     if sys.argv[1:]:
         for opt in sys.argv[1:]:
+
             if "-c" in opt or "-r" in opt:
                 mode = "capture"
+
             elif "-h" in opt:
-                print __doc__
-                sys.exit()
+                if "-head" in opt:
+                    salida_selecc = "Headphones"
+                else:
+                    print __doc__
+                    sys.exit()
+
             elif "dB" in opt:
                 vol = opt
+
             elif opt in ("on", "off"):
                 onoff = opt
+
             else:
                 print __doc__
                 sys.exit()
+
     if vol:
+        print "\n--- (i) setting '" + salida_selecc + "' level.\n"
         setDBs(vol, mode)
     elif onoff:
         setLevel(onoff)
 
     getVol(mode)
+    print ""
