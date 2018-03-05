@@ -89,10 +89,25 @@ sleep 1
 ### Arranca JACK
 cmd="jackd "$new_jack_options" -d"$system_card" -r"$fs
 echo ""
-echo "--- Arrancando JACK:"
+echo "--- Esperando a  JACK:"
 echo $cmd
 $cmd &
-sleep 3
+# Esperamos hasta 10s a que Jack esté disponible
+i=(0)
+while (( $i <= 10 )); do
+    tmp=$(jack_lsp)
+    if [[ $tmp ]]; then
+        break
+    fi
+    ((i++))
+    sleep 1
+done
+if (( i >= 10 )); then
+    echo ""
+    echo "(!) error arrancando JACK."
+    echo ""
+    exit 0
+fi
 
 ### Arranca Brutefir con el nuevo archivo brutefir_config
 echo ""
