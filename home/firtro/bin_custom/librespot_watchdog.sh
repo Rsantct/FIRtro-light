@@ -14,7 +14,6 @@ if [[ $1 ]]; then
     bitrate=$1
 fi
 
-
 function arranca_librespot () {
     echo  "("$(basename $0)") Arrancando librespot ..."
     pkill -f -KILL "bin/librespot"   # > /dev/null
@@ -35,8 +34,8 @@ while true; do
     estavivo=$(pgrep -fc "\-\-name\ $(hostname)")
 
     if [[ $estavivo != 0 ]]; then
-        echo "("$(basename $0)") librespot en ejecución"
-
+        #echo "("$(basename $0)") librespot en ejecución"
+        :
     else
         echo "("$(basename $0)") librespot no detectado, reiniciando ..."
         arranca_librespot
