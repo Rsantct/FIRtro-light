@@ -32,7 +32,7 @@ arranca_librespot
 reintentos=0
 
 while true; do
-    estavivo=$(pgrep -fc "\-\-name\ wpi")
+    estavivo=$(pgrep -fc "\-\-name\ $(hostname)")
 
     if [[ $estavivo != 0 ]]; then
         echo "("$(basename $0)") librespot en ejecución"
