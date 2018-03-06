@@ -7,29 +7,48 @@ alsaDevice=jack
 bitrate=160
 loop_timer=15
 #
-# OjO bitrate 320 creo que consume demasiados recursos para RPI1
+# OjO bitrate 320 consume demasiados recursos para RPI + Brutefir
 # 96 (low quality), 160 (default quality), or 320 (high quality)
 # Bitrate opcional por command line:
+brvalid=(96 160 320)
 if [[ $1 ]]; then
     bitrate=$1
+    if [[ " ${brvalid[*]} " != *"$bitrate"* ]]; then
+        echo "bitrate debe ser 90|160|320"
+        exit -1
+    fi
 fi
 
-function arranca_librespot () {
-    echo  "("$(basename $0)") Arrancando librespot ..."
-    pkill -f -KILL "bin/librespot"   # > /dev/null
-    /usr/bin/librespot --name $(hostname) --backend alsa --device $alsaDevice --bitrate $bitrate \
-                             --disable-audio-cache &
-}
+### Detecta si hubiera otro librespot_watchdog.sh previo y lo mata antes de seguir
+# cuenta los que hubiera
+cuentawd=$(pgrep -fc librespot_watchdog)
+if (( $cuentawd  > 1 ));then
+    echo ""
+    readarray array <<< $(pgrep -fl librespot_watchdog.sh)
+    # recorremos los procesos excepto el último que es este mismo.
+    len=${#array[@]}
+    len=$(( $len - 1 ))
+    for cosa in "${array[@]:0:$len}"; do
+        if [[ $cosa == *"librespot_watch"* ]]; then
+            pid=$(cut -d" " -f1 <<< $cosa)
+            echo "(i) finalizando "$cosa
+            kill -KILL $pid
+            sleep 1
+        fi
+    done
+fi
 
 # Archivo de log de reinicios de 'librespot'
 flog=$(echo $(basename $0) | cut -d"." -f1)".log"
 
 # Arranca librespot:
-arranca_librespot
+echo  "("$(basename $0)") Arrancando librespot ..."
+pkill -f -KILL "bin/librespot"   # > /dev/null
+/usr/bin/librespot --name $(hostname) --backend alsa --device $alsaDevice --bitrate $bitrate \
+                   --disable-audio-cache &
 
 # Loop de watchdog:
 reintentos=0
-
 while true; do
     estavivo=$(pgrep -fc "\-\-name\ $(hostname)")
 
