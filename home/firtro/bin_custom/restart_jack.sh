@@ -1,27 +1,68 @@
 #!/bin/bash
 
-# Permite relanzar jack/brutefir/ecasound 
+# v0.1BETA
+# Cutre script que permite relanzar jack/brutefir/ecasound de FIRtro
 # ajustando un nuevo --period XXXX en Jack y con filter_length acorde en Brutefir.
-# (se creará un uevo archivo brutefir_config.XXXX al efecto)
+# (se creará un nuevo archivo brutefir_config.XXXX al efecto)
+#
+# v0.2BETA
+# admite cambio de Fs para ensayos...
 
-# Fs (de momento a piñon fijo)
-fs="44100"
 home="/home/firtro"
+
+function ayuda () {
+    echo
+    echo "    Uso: restart_jack.sh -pBufferSize [-rFs] "
+    echo
+    echo "    nota: sin espacios despues de -p o -r"
+    echo
+}
+
+function array_contains () {
+    # Retorna 0 si el array contiene el elemento buscado.
+    # El primer elemento proporcionado al llamar la función es lo buscado,
+    # el resto es donde se busca. Sí, es cutre lo se.
+    local result=-1
+    local arr=($@)
+    local buscado="${arr[0]}"
+    for i in "${arr[@]:1}"; do
+        if [[ $buscado == $i ]]; then
+            local result=0
+        fi
+    done
+    return $result
+}
 
 # Valores de buffer validos:
 bvalid=(64 128 256 512 1024 2048 4096 8192 16384)
+# Valores de fs válidos
+fsvalid=(44100 48000 96000 192000)
+fs="44100"      # Fs por defecto
 
-# Leemos el valor solicitado '--period'
+# Leemos los valores solicitados
 if [[ $1 ]]; then
-    let jperiod=$1
-    if [[ " ${bvalid[*]} " != *"$jperiod"* ]]; then
-        echo $jperiod es incorrecto
-        exit 0
+    if [[ $1 == *"-p"* ]]; then
+        let jperiod=${1/-p/}
+        if [[ " ${bvalid[*]} " != *"$jperiod"* ]]; then
+            echo $jperiod es incorrecto
+            exit 0
+        fi
+    fi
+    if [[ $2 == *"-r"* ]]; then
+        let tmp=${2/-r/}
+        #if [[ " ${fsvalid[*]} " == $tmp ]]; then
+        if array_contains $tmp "${fsvalid[@]}"; then
+            fs=$tmp
+        else
+            echo $tmp es incorrecto
+            exit 0
+        fi
     fi
 else
-    echo "uso: restart_jack.sh buffer_size"
+    ayuda
     exit 0
 fi
+
 
 ### Adecuación de Brutefir filter_length
 let bpsize=$jperiod # Brutefir partition size
@@ -60,10 +101,18 @@ echo "-----------------------------"
 echo ""
 
 ### Prepara un nuevo archivo 'brutefir_config' con un particionado adecuado
-Bconfig=$home"/lspk/"$loudspeaker"/"$fs"/brutefir_config"
-newBconfig=$Bconfig"."$bpsize"."$bnparts
+tmp=$(pgrep -fla brutefir)
+for opc in ${fsvalid[@]}; do
+    if [[ $tmp == *$opc* ]]; then
+        fsOld=$opc
+    fi
+done
+mkdir -p $home"/lspk/"$loudspeaker"/"$fs"/"
+Bconfig=$home"/lspk/"$loudspeaker"/"$fsOld"/brutefir_config"
+newBconfig=${Bconfig/$fsOld/$fs}"."$bpsize"."$bnparts
 cp $Bconfig $newBconfig
 sed -i '/.*filter_length.*/c\'$bflength';' $newBconfig
+sed -i '/.*sampling_rate:.*/c\sampling_rate:'$fs';' $newBconfig
 
 ### Remplaza el nuevo valor -pXXXX  en jack_options
 # Quitamos espacios
@@ -103,9 +152,9 @@ while (( $i <= 10 )); do
     sleep 1
 done
 if (( i >= 10 )); then
-    echo ""
+    echo
     echo "(!) ERROR arrancando JACK."
-    echo ""
+    echo
     exit -1
 fi
 
@@ -125,9 +174,9 @@ while (( $i <= 5 )); do
     sleep 1
 done
 if (( i >= 5 )); then
-    echo ""
-    echo "(!) ERROR arrancando BRUTEFIR."
-    echo ""
+    echo
+    echo "(i) ERROR arrancando BRUTEFIR."
+    echo
     exit -1
 fi
 
@@ -135,7 +184,7 @@ fi
 ### Arranca Ecasound
 if [[ $load_ecasound == "True" ]]; then
     cmd=$ecasound_path" -q --server -s:"$ecsFile
-    echo ""
+    echo
     echo "--- Arrancando ECASOUND:"
     echo $cmd
     $cmd &
@@ -151,9 +200,20 @@ if [[ $load_ecasound == "True" ]]; then
         sleep 1
     done
     if (( i >= 5 )); then
-        echo ""
-        echo "(!) ERROR arrancando ECASOUND."
-        echo ""
+        echo
+        echo "(i) ERROR arrancando ECASOUND."
+        echo
         exit -1
     fi
 fi
+
+echo
+echo "--- (i) brutefir_config anterior:"
+echo "    "$Bconfig
+echo
+echo "--- (i) brutefir_config nuevo:"
+echo "    "$newBconfig
+echo
+echo "period: " $jperiod
+echo "Fs:     " $fs
+echo "Done."
