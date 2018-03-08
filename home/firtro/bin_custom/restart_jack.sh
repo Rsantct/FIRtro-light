@@ -5,23 +5,49 @@
 # ajustando un nuevo --period XXXX en Jack y con filter_length acorde en Brutefir.
 # (se creará un nuevo archivo brutefir_config.XXXX al efecto)
 #
-# v0.2BETA
+# v0.2bBETA
 # admite cambio de Fs para ensayos...
+# y se restaura el level de FIRtro para evitar sustos...
+# y admite -P para jackd solo Playback
 
 home="/home/firtro"
 
 function ayuda () {
     echo
-    echo "    Uso: restart_jack.sh -pBufferSize [-rFs] "
+    echo "    Uso: restart_jack.sh -pBufferSize [-rFs] [-P]"
+    echo "         -P: solo playback"
     echo
     echo "    nota: sin espacios despues de -p o -r"
     echo
 }
 
+function lee_audio_config () { ### Lee audio/config
+    loudspeaker=$(grep ^loudspeaker $home/audio/config | grep -v ";" | cut -d" " -f3)
+    system_card=$(grep ^system_card $home/audio/config | grep -v ";" | cut -d" " -f3)
+    jack_options=$(grep ^jack_options $home/audio/config | grep -v ";" | cut -d" " -f3-)
+    brutefir_path=$(grep ^brutefir_path $home/audio/config | grep -v ";" | cut -d" " -f3)
+    load_ecasound=$(grep ^load_ecasound $home/audio/config | grep -v ";" | cut -d" " -f3)
+    ecasound_path=$(grep ^ecasound_path $home/audio/config | grep -v ";" | cut -d" " -f3)
+    ecasound_filters=$(grep ^ecasound_filters $home/audio/config | grep -v ";" | cut -d" " -f3)
+    ecsFile=$home/audio/"PEQx"$ecasound_filters"_defeat_"$fs".ecs"
+    echo ""
+    echo "--- Leyendo audio/config: ---"
+    echo "system_card:   " $system_card
+    echo "jack_options:  " $jack_options
+    echo "brutefir_path: " $brutefir_path
+    echo "loudspeaker:   " $loudspeaker
+    echo "load_ecasound: " $load_ecasound
+    if [[ $load_ecasound == "True" ]]; then
+        echo "ecsFile:       " $ecsFile
+    fi
+    echo "-----------------------------"
+    echo ""
+}
+
 function array_contains () {
     # Retorna 0 si el array contiene el elemento buscado.
     # El primer elemento proporcionado al llamar la función es lo buscado,
-    # el resto es donde se busca. Sí, es cutre lo se.
+    # el resto es donde se busca. Sí, lo se, es cutre.
     local result=-1
     local arr=($@)
     local buscado="${arr[0]}"
@@ -37,19 +63,29 @@ function array_contains () {
 bvalid=(64 128 256 512 1024 2048 4096 8192 16384)
 # Valores de fs válidos
 fsvalid=(44100 48000 96000 192000)
+
+# Valores por defecto
 fs="44100"      # Fs por defecto
+jP=false        # jack only Playback
 
 # Leemos los valores solicitados
-if [[ $1 ]]; then
-    if [[ $1 == *"-p"* ]]; then
-        let jperiod=${1/-p/}
+for opc in $@; do
+    if [[ $opc == *"-h"* ]]; then
+        ayuda
+        exit 0
+    fi
+    if [[ $opc == "-P" ]]; then
+        let jP=true
+    fi
+    if [[ $opc == *"-p"* ]]; then
+        let jperiod=${opc/-p/}
         if [[ " ${bvalid[*]} " != *"$jperiod"* ]]; then
             echo $jperiod es incorrecto
             exit 0
         fi
     fi
-    if [[ $2 == *"-r"* ]]; then
-        let tmp=${2/-r/}
+    if [[ $opc == *"-r"* ]]; then
+        let tmp=${opc/-r/}
         #if [[ " ${fsvalid[*]} " == $tmp ]]; then
         if array_contains $tmp "${fsvalid[@]}"; then
             fs=$tmp
@@ -58,11 +94,14 @@ if [[ $1 ]]; then
             exit 0
         fi
     fi
-else
+done
+if [[ ! $1 ]]; then
     ayuda
     exit 0
 fi
 
+### Lee audio/config
+lee_audio_config
 
 ### Adecuación de Brutefir filter_length
 let bpsize=$jperiod # Brutefir partition size
@@ -76,42 +115,22 @@ if (( $jperiod < 1024 )); then
 #    let "bpsize = $jperiod * 2"
 fi
 # Brutefir filter_length definition
-bflength="filter_length:"$bpsize","$bnparts
-
-### Lee audio/config
-loudspeaker=$(grep ^loudspeaker $home/audio/config | grep -v ";" | cut -d" " -f3)
-system_card=$(grep ^system_card $home/audio/config | grep -v ";" | cut -d" " -f3)
-jack_options=$(grep ^jack_options $home/audio/config | grep -v ";" | cut -d" " -f3-)
-brutefir_path=$(grep ^brutefir_path $home/audio/config | grep -v ";" | cut -d" " -f3)
-load_ecasound=$(grep ^load_ecasound $home/audio/config | grep -v ";" | cut -d" " -f3)
-ecasound_path=$(grep ^ecasound_path $home/audio/config | grep -v ";" | cut -d" " -f3)
-ecasound_filters=$(grep ^ecasound_filters $home/audio/config | grep -v ";" | cut -d" " -f3)
-ecsFile=$home/audio/"PEQx"$ecasound_filters"_defeat_"$fs".ecs"
-echo ""
-echo "--- Leyendo audio/config: ---"
-echo "system_card:   " $system_card
-echo "jack_options:  " $jack_options
-echo "brutefir_path: " $brutefir_path
-echo "loudspeaker:   " $loudspeaker
-echo "load_ecasound: " $load_ecasound
-if [[ $load_ecasound == "True" ]]; then
-    echo "ecsFile:       " $ecsFile
-fi
-echo "-----------------------------"
-echo ""
+bfflength="filter_length:"$bpsize","$bnparts
 
 ### Prepara un nuevo archivo 'brutefir_config' con un particionado adecuado
 tmp=$(pgrep -fla brutefir)
 for opc in ${fsvalid[@]}; do
     if [[ $tmp == *$opc* ]]; then
         fsOld=$opc
+    else # por si acaso brutefir no estuviera funcionando
+        fsOld=$fs
     fi
 done
 mkdir -p $home"/lspk/"$loudspeaker"/"$fs"/"
 Bconfig=$home"/lspk/"$loudspeaker"/"$fsOld"/brutefir_config"
 newBconfig=${Bconfig/$fsOld/$fs}"."$bpsize"."$bnparts
 cp $Bconfig $newBconfig
-sed -i '/.*filter_length.*/c\'$bflength';' $newBconfig
+sed -i '/.*filter_length.*/c\'$bfflength';' $newBconfig
 sed -i '/.*sampling_rate:.*/c\sampling_rate:'$fs';' $newBconfig
 
 ### Remplaza el nuevo valor -pXXXX  en jack_options
@@ -137,6 +156,9 @@ sleep 1
 
 ### Arranca JACK
 cmd="jackd "$new_jack_options" -d"$system_card" -r"$fs
+if [[ $jP ]]; then
+    cmd=$cmd" -P"
+fi
 echo ""
 echo "--- Esperando a JACK:"
 echo $cmd
@@ -214,6 +236,14 @@ echo
 echo "--- (i) brutefir_config nuevo:"
 echo "    "$newBconfig
 echo
+if [[ $jP ]]; then
+    echo "onlyPb: " true
+else
+    echo "onlyPb: " false
+fi
 echo "period: " $jperiod
 echo "Fs:     " $fs
 echo "Done."
+
+echo "Restaurando el volumen de FIRtro"
+/home/firtro/bin/control level_add 0
