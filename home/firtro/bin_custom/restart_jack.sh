@@ -9,15 +9,29 @@
 # admite cambio de Fs para ensayos...
 # y se restaura el level de FIRtro para evitar sustos...
 # y admite -P para jackd solo Playback
+#
+# v0.3BETA
+# Se particiona Brutefir usando particiona_brutefir.py
+# (se verifica que Brutefir partition size >= Jack buffer size)
+#
+# TO DO: esto empezó como un script sencillo en bash,
+#        pero habdría que reescribirlo en python
+#
 
 home="/home/firtro"
 
 function ayuda () {
     echo
-    echo "    Uso: restart_jack.sh -pBufferSize [-rFs] [-P]"
-    echo "         -P: solo playback"
+    echo "  Uso: restart_jack.sh -jp=XXX -bflen=XXX [-jn=X -bfmaxp=XX -r=Fs -jP]"
     echo
-    echo "    nota: sin espacios despues de -p o -r"
+    echo "         -jp=XXX      Jack period"
+    echo "         -jn=X        Jack numper of periods (default audio/config)"
+    echo "         -jP          solo playback"
+    echo
+    echo "         -bflen=XXX   Brutefir filter length (default 32K)"
+    echo "         -bfmaxp=XXX  Brutefir max partitions (default 16)"
+    echo
+    echo "       nota: sin espacios entre el signo ="
     echo
 }
 
@@ -64,9 +78,11 @@ bvalid=(64 128 256 512 1024 2048 4096 8192 16384)
 # Valores de fs válidos
 fsvalid=(44100 48000 96000 192000)
 
-# Valores por defecto
-fs="44100"      # Fs por defecto
-jP=false        # jack only Playback
+# Valore por defecto
+fs="44100"        # Fs por defecto
+jP="no"           # Jack only Playback
+BFFL="32768"      # Brutefir filter length
+BFMP="16"         # Brutefir max partitions
 
 # Leemos los valores solicitados
 for opc in $@; do
@@ -74,18 +90,27 @@ for opc in $@; do
         ayuda
         exit 0
     fi
-    if [[ $opc == "-P" ]]; then
-        let jP=true
+    if [[ $opc == *"-bflen="* ]]; then
+        let BFFL=${opc/-bflen=/}
     fi
-    if [[ $opc == *"-p"* ]]; then
-        let jperiod=${opc/-p/}
+    if [[ $opc == *"-bfmaxp="* ]]; then
+        let BFMP=${opc/-bfmaxp=/}
+    fi
+    if [[ $opc == "-jP" ]]; then
+        jP="si"
+    fi
+    if [[ $opc == *"-jp="* ]]; then
+        let jperiod=${opc/-jp=/}
         if [[ " ${bvalid[*]} " != *"$jperiod"* ]]; then
             echo $jperiod es incorrecto
             exit 0
         fi
     fi
-    if [[ $opc == *"-r"* ]]; then
-        let tmp=${opc/-r/}
+    if [[ $opc == *"-jn="* ]]; then
+        let jnperiods=${opc/-jn=/}
+    fi
+    if [[ $opc == *"-r="* ]]; then
+        let tmp=${opc/-r=/}
         #if [[ " ${fsvalid[*]} " == $tmp ]]; then
         if array_contains $tmp "${fsvalid[@]}"; then
             fs=$tmp
@@ -103,21 +128,29 @@ fi
 ### Lee audio/config
 lee_audio_config
 
-### Adecuación de Brutefir filter_length
-let bpsize=$jperiod # Brutefir partition size
-let bnparts=1       # Brutefir number of partitions
-# Particionado de Brutefir. Filtrado de al menos 1024 taps
-if (( $jperiod < 1024 )); then
-    let bpsize=1024
-# NOTA descartamos el particionado ya que consume demasiado %CPU
-#else
-#    let bnparts=2
-#    let "bpsize = $jperiod * 2"
+### Particionado de Brutefir
+echo "--- Calculando particionado de Brutefir"
+cmd="python /home/firtro/bin_custom/particiona_brutefir.py \
+             -jp=$jperiod -bflen=$BFFL -bfmaxp=$BFMP"
+if [[ $jnperiods ]]; then
+    cmd=$cmd" -jn="$jnperiods
 fi
-# Brutefir filter_length definition
-bfflength="filter_length:"$bpsize","$bnparts
+# Vemos la llamada al script auxiliar 'particiona_brutefir.py'
+echo $cmd
+tmp=$($cmd)
+if [[ ! $tmp ]]; then
+    echo
+    echo "(i) ERROR: Brutefir partition size >= Jack buffer size"
+    echo
+    exit -1
+fi
 
-### Prepara un nuevo archivo 'brutefir_config' con un particionado adecuado
+bpsize=$(echo $tmp | cut -d"," -f1)
+bnparts=$(echo $tmp | cut -d"," -f2)
+bfflength="filter_length:"$bpsize","$bnparts
+echo $bfflength
+
+### Prepara un nuevo archivo 'brutefir_config'
 tmp=$(pgrep -fla brutefir)
 for opc in ${fsvalid[@]}; do
     if [[ $tmp == *$opc* ]]; then
@@ -133,7 +166,7 @@ cp $Bconfig $newBconfig
 sed -i '/.*filter_length.*/c\'$bfflength';' $newBconfig
 sed -i '/.*sampling_rate:.*/c\sampling_rate:'$fs';' $newBconfig
 
-### Remplaza el nuevo valor -pXXXX  en jack_options
+### Remplaza el nuevo valor -pXXXX y/o -nX  en jack_options
 # Quitamos espacios
 jack_options=$(echo $jack_options | sed s/\ -/xxx-/g)
 jack_options=$(echo $jack_options | sed s/\ //g)
@@ -148,6 +181,18 @@ for cosa in "${array[@]}"; do
         new_jack_options=$new_jack_options" -p"$jperiod
     fi
 done
+readarray -td" " array <<< $new_jack_options
+new_jack_options=""
+for cosa in "${array[@]}"; do
+    if [[ $cosa != *"-n"* ]]; then
+        new_jack_options=$new_jack_options" "$cosa
+    else
+        new_jack_options=$new_jack_options" -n"$jnperiods
+    fi
+done
+
+
+#######################################################################
 
 ### Detiene Jack-Brutefir y Ecasound
 pkill -f -KILL jackd
@@ -156,16 +201,16 @@ sleep 1
 
 ### Arranca JACK
 cmd="jackd "$new_jack_options" -d"$system_card" -r"$fs
-if [[ $jP ]]; then
+if [[ $jP == "si" ]] && [[ $new_jack_options != *"-P"* ]]; then
     cmd=$cmd" -P"
 fi
 echo ""
 echo "--- Esperando a JACK:"
 echo $cmd
 $cmd &
-# Esperamos hasta 10s a que Jack esté disponible
+# Esperamos hasta 5 s a que Jack esté disponible
 i=(0)
-while (( $i <= 10 )); do
+while (( $i <= 5 )); do
     tmp=$(jack_lsp system)
     if [[ $tmp ]]; then
         break
@@ -173,7 +218,7 @@ while (( $i <= 10 )); do
     ((i++))
     sleep 1
 done
-if (( i >= 10 )); then
+if (( i >= 5 )); then
     echo
     echo "(!) ERROR arrancando JACK."
     echo
@@ -201,7 +246,6 @@ if (( i >= 5 )); then
     echo
     exit -1
 fi
-
 
 ### Arranca Ecasound
 if [[ $load_ecasound == "True" ]]; then
@@ -237,12 +281,13 @@ echo "--- (i) brutefir_config nuevo:"
 echo "    "$newBconfig
 echo
 if [[ $jP ]]; then
-    echo "onlyPb: " true
+    echo "Jack Only Playback:  "true
 else
-    echo "onlyPb: " false
+    echo "Jack Only Playback:  "false
 fi
-echo "period: " $jperiod
-echo "Fs:     " $fs
+echo "Jack buffer:         "$(( $jperiod * $jnperiods )) "("$jperiod" x "$jnperiods")"
+echo "Brutefir part. size: "$bpsize" ("$bfflength" = "$(( $bpsize * $bnparts ))")"
+echo "Fs:                  "$fs
 echo "Done."
 
 echo "Restaurando el volumen de FIRtro"
