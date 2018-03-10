@@ -15,7 +15,7 @@
 # (se verifica que Brutefir partition size >= Jack buffer size)
 #
 # TO DO: esto empezó como un script sencillo en bash,
-#        pero habría que reescribirlo en python
+#        pero habría que reescribirlo en python :-/
 #
 
 home="/home/firtro"
