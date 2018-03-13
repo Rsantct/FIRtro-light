@@ -19,7 +19,7 @@ DRC de bajo %CPU basado en Ecasound.
 
 Instalar FIRtro https://github.com/AudioHumLab/FIRtro/wiki
 
-Adaptarlo a FIRtro-Light, ver en [wiki](https://github.com/Rsantct/FIRtro-light/wiki/00-Firtro-light)
+Adaptarlo a FIRtro-Light, ver en **[WIKI](https://github.com/Rsantct/FIRtro-light/wiki/00-Firtro-light)**
 
 # Créditos
 
