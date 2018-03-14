@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Parches para este FIRtro
+# Parchea scripts bin/ de FIRtro
 
 # Cambia la espera normal de 20 s al server, ponemos 45 s para una RPI1 antigua.
 sed -i.bak s/segundos\ =\ 20/segundos\ =\ 45/g /home/firtro/bin/initfirtro.py
