@@ -6,13 +6,13 @@
 # Añadir lo siguiente a /etc/rc.local:
 #
 
-# Parches para este FIRtro
-su -l firtro -c "/home/firtro/bin_custom/patch_firtro.sh"
+# Parche para usar FIRtro en una Raspberry Pi 1
+su -l firtro -c "/home/firtro/bin_custom/patch_firtro_rpi1.sh"
 
-# FIRtro
+# Incia FIRtro
 su -l firtro -c "/home/firtro/bin/initfirtro.py "
 
-# Por si acaso ajustamos la tarjeta de sonido
+# Tarjeta de sonido Cirrus / Wolfson
 # (aunque FIRtro debería tenerla bien configurada)
 su -l firtro -c "/home/pi/bin_cirrus/Playback_to_Lineout.sh"
 su -l firtro -c "/home/pi/bin_cirrus/Record_from_Linein.sh"
