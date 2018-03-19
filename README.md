@@ -17,7 +17,7 @@ Se descarta el uso directo de Brutefir sobre ALSA (sin Jack), el pequeño consum
 
 DRC de bajo %CPU basado en Ecasound.
 
-Control de volumen mediante un ratón.
+Control de volumen también mediante un ratón.
 
 # Instalación
 
