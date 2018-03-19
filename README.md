@@ -7,13 +7,17 @@ Con motivo de un encargo, se pretende que sirva en un salón para oir la TV y pa
 Sin selector de entradas
 
 Las fuentes serán aplicaciones ALSA o bien la entrada analógica de la tarjeta de sonido:
+
 - Raspotify (librespot) → ALSA → Jack
 - Receptor de audio BlueTooth → ALSA → Jack
+- Receptor Airplay → ALSA → Jack
 - LineIN → Jack
 
 Se descarta el uso directo de Brutefir sobre ALSA (sin Jack), el pequeño consumo de CPU de Jack compensa los posibles probemas de I/O observados con el uso de Brutefir sobre ALSA (Loopbak + tarjeta física).
 
 DRC de bajo %CPU basado en Ecasound.
+
+Control de volumen mediante un ratón.
 
 # Instalación
 
