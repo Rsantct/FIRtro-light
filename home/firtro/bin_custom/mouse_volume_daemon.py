@@ -7,6 +7,17 @@
     left button   -->  vol --
     right button  -->  vol ++
     wheel         -->  togles mute
+    
+    Permisos de acceso: el usuario 'firtro' debe incluirse en el grupo 
+    que tiene acceso a /dev/input/xxxx
+    (está definido en /etc/udev/rules.d/99-input.rules)
+    
+    Por ejemplo
+    ~ $ ls -l /dev/input/
+    total 0
+    crw-rw---- 1 root input 13, 64 Mar 19 20:53 event0
+    crw-rw---- 1 root input 13, 63 Mar 19 20:53 mice
+    crw-rw---- 1 root input 13, 32 Mar 19 20:53 mouse0
 
 """
 ##################
