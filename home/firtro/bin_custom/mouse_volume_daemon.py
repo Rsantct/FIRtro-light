@@ -6,7 +6,7 @@
 
     left button   -->  vol --
     right button  -->  vol ++
-    wheel         -->  togles mute
+    mid button    -->  togles mute
     
     Permisos de acceso: el usuario 'firtro' debe incluirse en el grupo 
     que tiene acceso a /dev/input/xxxx
@@ -65,7 +65,7 @@ def getMouseEvent():
     elif m == "0a0000":
         return "buttonRightDown"
     elif m == "0c0000":
-        return "wheelDown"
+        return "midButton"
 
 for opc in sys.argv:
     if "-h" in opc:
@@ -81,7 +81,7 @@ while True:
         os.system("control level_add -" + str(SALTOdBs))    # level --
     elif ev == "buttonRightDown":
         os.system("control level_add +" + str(SALTOdBs))    # level ++
-    elif ev == "wheelDown":
+    elif ev == "midButton":
         os.system("control toggle")                         # mute / unmute
 
 fmice.close();
