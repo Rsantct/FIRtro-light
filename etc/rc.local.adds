@@ -9,10 +9,10 @@
 # Parche para usar FIRtro en una Raspberry Pi 1
 su -l firtro -c "/home/firtro/bin_custom/patch_firtro_rpi1.sh"
 
-# Incia FIRtro
+# Inicia FIRtro
 su -l firtro -c "/home/firtro/bin/initfirtro.py "
 
-# Tarjeta de sonido Cirrus / Wolfson
+# Solo para tarjeta de sonido I2S Cirrus o Wolfson
 # (aunque FIRtro debería tenerla bien configurada)
 su -l firtro -c "/home/pi/bin_cirrus/Playback_to_Lineout.sh"
 su -l firtro -c "/home/pi/bin_cirrus/Record_from_Linein.sh"
