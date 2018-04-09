@@ -11,17 +11,28 @@
 # 
 # TODO:
 #   Hablar con esta instancia de Ecasound para cambiar la ganancia al vuelo
+#   sería de utilidad para pruebas de nivel.
+
+####################### CONFIGURACION ######################
+# Nombre visible en Jack de esta instancoa Ecasound:
+jackName="analog_lev_adj"
+#
+# Puertos capture a los que Ecasound se conecatará:
+jackAnalogInput="system"
+#
+# Nota: usamos Ecasound escuchando en el puerto tcp 12868 porque 
+#       el default port 2868 es usado por el PEQ de FIRtro.
+tcp_port=12868
+#
+# Ganancia por defecto
+gaindB="+3.0"
+############################################################
 
 
-# Gain dB que aplicaremos
-gaindB="+0.0"
+# Leemos la Gain dB que aplicaremos, por defecto 3.0 dB
 if [ $1 ]; then
     gaindB=$1
 fi
-
-# matamos si hubiera otro ecasound haciendo lo mismo
-pkill -KILL -f analog_lev_adj
-sleep .5
 
 # Esperamos hasta 10 segundos a que se este ejecutando JACK
 c=0
@@ -43,13 +54,12 @@ if [[ $jackIsRunning = "false" ]]; then
     exit 0
 fi
 
-# Nombre visible en JACK:
-jackName="analog_lev_adj"
+# Si hemos llegado aquí es que Jack está disponible,
+# matamos si hubiera otro ecasound haciendo lo mismo.
+pkill -KILL -f analog_lev_adj
+sleep .5
 
-# Puertos capture a los que nos conectamos:
-jackAnalogInput="system"
-
-# Puertos de entrada a FIRtro
+# Averiguamos los puertos de entrada a FIRtro
 FIRtroUsaEcasound=$(grep load_ecasound /home/firtro/audio/config | grep -v ";" | cut -d"=" -f2)
 if [[ $FIRtroUsaEcasound == *"False"* ]]; then
     FIRtroPorts=brutefir
@@ -57,11 +67,10 @@ else
     FIRtroPorts=ecasound
 fi
 
-echo "(i) EJECUTANDO capture_level_adj.sh con ganancia: "$gaindB
-echo "    Los puertos disponibles en jack son:          "$jackName":out_x"
-# TCP port used by the daemon mode, by default 2868
-# Usamos el puerto 12868
-ecasound    -q --server --server-tcp-port=12868 \
+# Lanzamos Ecasound
+echo "(i) Ejecutando 'capture_level_adj.sh', Gain = "$gaindB
+echo "    Los puertos disponibles en jack son:      "$jackName":out_x"
+ecasound    -q --server --server-tcp-port=$tcp_port \
             -G:jack,$jackName,notransport \
             -i:jack,$jackAnalogInput -o:jack,$FIRtroPorts \
             -eadb:$gaindB &
