@@ -55,7 +55,7 @@ while (( c <= $tJack )); do
     echo "."
 done
 if [[ $jackIsRunning = "false" ]]; then
-    echo "(i) Jack NO funciona, se CANCELA capture_level_adj.sh"
+    echo "(i) Jack NO funciona, se CANCELA capture_gain.sh"
     exit 0
 fi
 
@@ -79,5 +79,5 @@ ecasound    -q --server --server-tcp-port=$tcp_port \
             -eadb:$gaindB &
 
 # Info:
-echo "(i) Ejecutando 'capture_level_adj.sh', Gain = "$gaindB
+echo "(i) Ejecutando 'capture_gain.sh', Gain = "$gaindB
 echo "    Los puertos disponibles en jack son '"$jackName":out_x'"
