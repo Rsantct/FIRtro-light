@@ -50,15 +50,15 @@ jackName="analog_lev_adj"
 jackAnalogInput="system"
 
 # Puertos de entrada a FIRtro
-FIRtroUsaEcasound=$(grep load_ecasound audio/config | grep -v ";" | cut -d"=" -f2)
+FIRtroUsaEcasound=$(grep load_ecasound /home/firtro/audio/config | grep -v ";" | cut -d"=" -f2)
 if [[ $FIRtroUsaEcasound == *"False"* ]]; then
     FIRtroPorts=brutefir
 else
     FIRtroPorts=ecasound
 fi
 
-echo "(i) EJECUTANDO: 'capture_level_adj.sh' con ganancia="$gaindB
-echo "    Los puertos disponibles en jack son: "$jackName":out_x"
+echo "(i) EJECUTANDO capture_level_adj.sh con ganancia: "$gaindB
+echo "    Los puertos disponibles en jack son:          "$jackName":out_x"
 # TCP port used by the daemon mode, by default 2868
 # Usamos el puerto 12868
 ecasound    -q --server --server-tcp-port=12868 \
