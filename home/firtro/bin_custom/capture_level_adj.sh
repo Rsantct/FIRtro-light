@@ -70,9 +70,11 @@ else
 fi
 
 # Lanzamos Ecasound
-echo "(i) Ejecutando 'capture_level_adj.sh', Gain = "$gaindB
-echo "    Los puertos disponibles en jack son:      "$jackName":out_x"
 ecasound    -q --server --server-tcp-port=$tcp_port \
             -G:jack,$jackName,notransport \
             -i:jack,$jackAnalogInput -o:jack,$FIRtroPorts \
             -eadb:$gaindB &
+
+# Info:
+echo "(i) Ejecutando 'capture_level_adj.sh', Gain = "$gaindB
+echo "    Los puertos disponibles en jack son '"$jackName":out_x'"
