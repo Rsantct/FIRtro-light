@@ -14,7 +14,9 @@
 #   sería de utilidad para pruebas de nivel.
 
 ####################### CONFIGURACION ######################
-# Nombre visible en Jack de esta instancoa Ecasound:
+# Nombre en Jack de los puertos de esta instancia Ecasound.
+# (!) Estos serán los puertos a configurar en audio/inputs 
+#     de FIRtro para la entrada analógica.
 jackName="analog_lev_adj"
 #
 # Puertos capture a los que Ecasound se conecatará:
