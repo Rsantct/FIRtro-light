@@ -28,6 +28,9 @@ tcp_port=12868
 #
 # Ganancia por defecto
 gaindB="+3.0"
+#
+# Tiempo de espera en segundos a que Jack esté disponible
+tJack=10
 ############################################################
 
 
@@ -39,8 +42,8 @@ fi
 # Esperamos hasta 10 segundos a que se este ejecutando JACK
 c=0
 jackIsRunning=false
-echo "(i) esperando a Jack en 5 seg ..."
-while (( c <= 5 )); do
+echo "(i) esperando a Jack en "$tJack" seg ..."
+while (( c <= $tJack )); do
     tmp=$(jack_lsp 2>/dev/null)
     if [[ $tmp == *"playback"* ]]; then
         echo "(i) Jack funcionando"
