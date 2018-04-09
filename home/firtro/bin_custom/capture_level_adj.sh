@@ -39,7 +39,7 @@ while (( c <= 5 )); do
     echo "."
 done
 if [[ $jackIsRunning = "false" ]]; then
-    echo "(i) Jack NO funciona, se CANCELA 'capture_level_adj.sh'"
+    echo "(i) Jack NO funciona, se CANCELA capture_level_adj.sh"
     exit 0
 fi
 
