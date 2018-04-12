@@ -17,7 +17,7 @@
 # Nombre en Jack de los puertos de esta instancia Ecasound.
 # (!) Estos serán los puertos a configurar en audio/inputs 
 #     de FIRtro para la entrada analógica.
-jackName="analog_lev_adj"
+jackName="capture_gain"
 #
 # Puertos capture a los que Ecasound se conecatará:
 jackAnalogInput="system"
@@ -61,7 +61,7 @@ fi
 
 # Si hemos llegado aquí es que Jack está disponible,
 # matamos si hubiera otro ecasound haciendo lo mismo.
-pkill -KILL -f analog_lev_adj
+pkill -KILL -f '-i:jack,'$jackAnalogInput
 sleep .5
 
 # Averiguamos los puertos de entrada a FIRtro
