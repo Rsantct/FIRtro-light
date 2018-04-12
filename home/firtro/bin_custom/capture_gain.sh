@@ -61,7 +61,7 @@ fi
 
 # Si hemos llegado aquí es que Jack está disponible,
 # matamos si hubiera otro ecasound haciendo lo mismo.
-pkill -KILL -f '-i:jack,'$jackAnalogInput
+pkill -KILL -f 'jack,'$jackAnalogInput
 sleep .5
 
 # Averiguamos los puertos de entrada a FIRtro
