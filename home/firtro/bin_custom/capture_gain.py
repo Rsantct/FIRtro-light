@@ -1,0 +1,103 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+"""
+    v0.1beta
+    Script para tener un cable con ganancia en Jack
+
+    Está pensado para tarjetas de sonido con poca sensibilidad en la
+    entrada analógica, como es el caso de la tarjeta I2S 'audioinjector' para RPI
+
+    Uso:    capture_gain.py gaindB
+"""
+
+####################### CONFIGURACION ######################
+#
+# Nombre en Jack de los puertos de esta instancia
+# (!) Estos serán los puertos a configurar en audio/inputs
+#     de FIRtro para la entrada analógica.
+jackName="capture_gain"
+#
+# Puertos capture a los que Ecasound se conecatará:
+jackAnalogInput="system"
+#
+# Ganancia (dB) por defecto
+gaindB="+6.0"
+#
+############################################################
+
+import sys
+import jack
+import numpy as np
+channels = "1", "2"
+
+def gaindBs(x, gdB=0.0):
+    # gdB = 20 * log10 (g)
+    # g = 10 ** (gdB/20)
+    return x * 10 ** (gdB/20.0)
+
+if __name__ == "__main__":
+
+    if len(sys.argv) == 2:
+        gaindB = float(sys.argv[1])
+    else:
+        print __doc__
+        sys.exit()
+
+    jack.attach(jackName)
+
+    for c in channels:
+        jack.register_port('out_'+c, jack.IsOutput)
+        jack.register_port("in_"+c,  jack.IsInput)
+
+    # Activamos los puertos
+    jack.activate()
+
+    # Los conectamos a la entrada analogica:
+    for c in channels:
+        jack.connect("system:capture_"+c, "capture_gain:in_"+c)
+
+    # Tomamos nota de la Fs y del buffer_size en JACK:
+    Fs =            float(jack.get_sample_rate())
+    buffer_size =   jack.get_buffer_size()
+
+    print "buffer: " + str(buffer_size), "delay: " + str(round(buffer_size/Fs*1000, 1)) + "ms"
+
+    # arrays para procesar nuestros puertos
+    ai = np.zeros( (2, buffer_size), dtype="f")
+    ao = np.zeros( (2, buffer_size), dtype="f")
+
+    # Loop infinito:
+    print "capturing audio"
+    underruns = 0
+    overruns  = 0
+    while True:
+        try:
+            # copia directa:
+            #np.copyto(ao, ai)
+
+            # amplificando:
+            ao = gaindBs(ai, gaindB)
+            omax = np.max(ao)
+
+            if omax > 1.0:
+                op = str(round(20*np.log10(omax), 1)) + " dB"
+                print "out_peak: " + op
+
+            jack.process(ao, ai)
+
+        except jack.InputSyncError:
+            underruns += 1
+            print "input sync warnings: " + str(underruns)
+
+        except jack.OutputSyncError:
+            overruns += 1
+            print "output sync warnings: " + str(overruns)
+
+        xruns = underruns + overruns
+        if xruns > 100:
+            #print "esto se sale de madre"
+            #break
+            pass
+
+    #jack.deactivate()
+    #jack.detach()
