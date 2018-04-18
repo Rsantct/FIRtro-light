@@ -10,30 +10,16 @@
     Uso:    capture_gain.py gaindB
 """
 
-####################### CONFIGURACION ######################
-#
-# Nombre en Jack de los puertos de esta instancia
-# (!) Estos serán los puertos a configurar en audio/inputs
-#     de FIRtro para la entrada analógica.
-jackName="capture_gain"
-#
-# Puertos capture a los que Ecasound se conecatará:
-jackAnalogInput="system"
-#
-# Ganancia (dB) por defecto
-gaindB="+6.0"
-#
-############################################################
-
 import sys
 import jack
 import numpy as np
+
 channels = "1", "2"
 
-def gaindBs(x, gdB=0.0):
-    # gdB = 20 * log10 (g)
-    # g = 10 ** (gdB/20)
-    return x * 10 ** (gdB/20.0)
+def dB2g(x, dB=0.0):
+    # dB = 20 * log10 (g)
+    # g = 10 ** (dB/20)
+    return x * 10 ** (dB/20.0)
 
 if __name__ == "__main__":
 
@@ -43,8 +29,10 @@ if __name__ == "__main__":
         print __doc__
         sys.exit()
 
-    jack.attach(jackName)
+    # Nos atachamos a jackd
+    jack.attach("capture_gain")
 
+    # Creamos los puertos de esta instancia
     for c in channels:
         jack.register_port('out_'+c, jack.IsOutput)
         jack.register_port("in_"+c,  jack.IsInput)
@@ -62,7 +50,8 @@ if __name__ == "__main__":
 
     print "buffer: " + str(buffer_size), "delay: " + str(round(buffer_size/Fs*1000, 1)) + "ms"
 
-    # arrays para procesar nuestros puertos
+    # arrays para procesar nuestros puertos con jack.process()
+    # https://github.com/rknLA/pyjack
     ai = np.zeros( (2, buffer_size), dtype="f")
     ao = np.zeros( (2, buffer_size), dtype="f")
 
@@ -72,17 +61,16 @@ if __name__ == "__main__":
     overruns  = 0
     while True:
         try:
-            # copia directa:
-            #np.copyto(ao, ai)
-
-            # amplificando:
-            ao = gaindBs(ai, gaindB)
+            # amplificamos:
+            ao = dB2g(ai, gaindB)
             omax = np.max(ao)
 
+            # warnings
             if omax > 1.0:
                 op = str(round(20*np.log10(omax), 1)) + " dB"
                 print "out_peak: " + op
 
+            # procesamos contra el thread real time de jackd
             jack.process(ao, ai)
 
         except jack.InputSyncError:
