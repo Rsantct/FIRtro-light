@@ -50,10 +50,10 @@ if __name__ == "__main__":
 
     print "buffer: " + str(buffer_size), "delay: " + str(round(buffer_size/Fs*1000, 1)) + "ms"
 
-    # arrays para procesar nuestros puertos con jack.process()
+    # Arrays buffer para procesar nuestros puertos con jack.process()
     # https://github.com/rknLA/pyjack
-    ai = np.zeros( (2, buffer_size), dtype="f")
-    ao = np.zeros( (2, buffer_size), dtype="f")
+    ai = np.zeros( (len(channels), buffer_size), dtype="f")
+    ao = np.zeros( (len(channels), buffer_size), dtype="f")
 
     # Loop infinito:
     print "capturing audio"
