@@ -16,10 +16,10 @@ import numpy as np
 
 channels = "1", "2"
 
-def dB2g(x, dB=0.0):
+def dB2g(dB=0.0):
     # dB = 20 * log10 (g)
     # g = 10 ** (dB/20)
-    return x * 10 ** (dB/20.0)
+    return 10 ** (dB/20.0)
 
 if __name__ == "__main__":
 
@@ -59,10 +59,11 @@ if __name__ == "__main__":
     print "capturing audio"
     underruns = 0
     overruns  = 0
+    g = dB2g(gaindB)
     while True:
         try:
             # amplificamos:
-            ao = dB2g(ai, gaindB)
+            ao = ai * g
             omax = np.max(ao)
 
             # warnings
