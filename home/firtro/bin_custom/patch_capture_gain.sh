@@ -31,14 +31,20 @@ isPatched=$(grep capture_gain.sh /home/firtro/bin/initfirtro.py)
 
 if [[ $isPatched == "" ]]; then
     echo "(i) patcheando initfirtro.py"
+
+    # Escribe una nota informativa
     echo "" >> /home/firtro/bin/initfirtro.py
     echo "    # Patch para disponer de un puerto Jack con una ganancia sobre system:capture" \
          >> /home/firtro/bin/initfirtro.py
     echo "    # https://github.com/Rsantct/FIRtro-light/wiki/205-sound-card-analog-input" \
          >> /home/firtro/bin/initfirtro.py
+
+    # Kill de procesos jack_cable_gain existentes
     echo "    Popen('pkill -KILL -f jack_cable_gain.py', shell=True)" \
          >> /home/firtro/bin/initfirtro.py
     echo "    sleep(.5)"  >> /home/firtro/bin/initfirtro.py
+
+    # Lanza jack_cable_gain.py:
     echo "    Popen('/home/firtro/bin_custom/jack_cable_gain.py source=system sink=brutefir \\" \
          >> /home/firtro/bin/initfirtro.py
     echo "           -d name=capture_gain -g="$gaindB" &', shell=True)" \
