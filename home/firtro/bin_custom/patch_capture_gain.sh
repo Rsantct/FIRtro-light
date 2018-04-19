@@ -36,7 +36,7 @@ if [[ $isPatched == "" ]]; then
          >> /home/firtro/bin/initfirtro.py
     echo "    # https://github.com/Rsantct/FIRtro-light/wiki/205-sound-card-analog-input" \
          >> /home/firtro/bin/initfirtro.py
-    echo "    Popen('kill -KILL $(pgrep -fl jack_cable_gain)', shell=True)" \
+    echo "    Popen('pkill -f jack_cable_gain.py)', shell=True)" \
          >> /home/firtro/bin/initfirtro.py
     echo "    Popen('/home/firtro/bin_custom/jack_cable_gain.py source=system sink=brutefir \\"
     echo "           -d name=capture_gain -g="$gaindB"', shell=True)" \
