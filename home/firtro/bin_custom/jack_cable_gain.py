@@ -14,29 +14,53 @@ import sys
 import jack
 import numpy as np
 
-def conecta (a, b)
-    for c in channels:
-        jack.connect("system:capture_"+c, "capture_gain:in_"+c)
+def conecta (a, b):
+    """ conecta los puertos a de captura con los b de playback
+    """
+    # lista de puertos A
+    Aports = [x for x in jack.get_ports() if a in x]
+    # lista de puertos A que son de captura
+    Aports = [x for x in Aports if jack.get_port_flags(x) % 2 == 0 ]
+    # lista de puertos B
+    Bports = [x for x in jack.get_ports() if b in x]
+    # lista de puertos B que son de playback
+    Bports = [x for x in Bports if jack.get_port_flags(x) % 2 == 1 ]
+    #print "Aports de captura:", Aports
+    #print "Bports de playback:", Bports
 
-def dB2g(dB=0.0):
+    # Recorremos A y lo vamos conectando a B
+    while Aports:
+        try:
+            p1 = Aports.pop(0)
+            p2 = Bports.pop(0)
+            #print p1, p2
+            jack.connect(p1, p2)
+        except:
+            pass
+
+def dB2g (dB=0.0):
     # dB = 20 * log10 (g)
     # g = 10 ** (dB/20)
     return 10 ** (dB/20.0)
 
 if __name__ == "__main__":
-    
+
     gaindB = 0.0
-    capturePorts = "system:capture"
-    playbackPorts = ""
+    # Canales del cable, por defecto 2
+    nchannels = 2
+    # Puertos a conectar en la entrada y en la salida del cable
+    source = ""
+    sink = ""
 
     for opc in sys.argv[1:]:
-        if opc[:2] == "-g":
-            gaindB = float(opc[2:])
-        elif opc[:2] == "-c":
-            capturePorts = str(opc[2:])
-        elif opc[:2] == "-p":
-            playbackPorts = str(opc[2:])
-        else:
+        if opc.startswith("channels="):
+            nchannels = int(opc.split("=")[-1])
+            gaindB = float(opc.split("=")[-1])
+        elif opc.startswith("source="):
+            source = str(opc.split("=")[-1])
+        elif opc.startswith("sink="):
+            sink = str(opc.split("=")[-1])
+        elif "-h" in opc:
             print __doc__
             sys.exit()
 
@@ -44,19 +68,22 @@ if __name__ == "__main__":
     jack.attach("cable_gain")
 
     # Creamos los puertos de esta instancia
-    for c in channels:
-        jack.register_port('out_'+c, jack.IsOutput)
-        jack.register_port("in_"+c,  jack.IsInput)
+    for i in range(1, 1 + nchannels):
+        jack.register_port('out_' + str(i), jack.IsOutput)
+        jack.register_port("in_"  + str(i), jack.IsInput)
 
     # Activamos los puertos
     jack.activate()
 
-    # Los conectamos a un puerto de captura y a un puerto de playback:
-    if capturePorts:
-        conecta(capturePorts, "cable_gain")
-    if playbackPorts:
-        conecta(playbackPorts, "cable_gain")
-        
+    # Los conectamos los puertos de captura y playback deseados:
+    if source:
+        conecta(source, "cable_gain")
+    if sink:
+        conecta(sink, "cable_gain")
+
+    while True:
+        pass
+
     # Tomamos nota de la Fs y del buffer_size en JACK:
     Fs =            float(jack.get_sample_rate())
     buffer_size =   jack.get_buffer_size()
