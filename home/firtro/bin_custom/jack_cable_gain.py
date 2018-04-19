@@ -14,7 +14,9 @@ import sys
 import jack
 import numpy as np
 
-channels = "1", "2"
+def conecta (a, b)
+    for c in channels:
+        jack.connect("system:capture_"+c, "capture_gain:in_"+c)
 
 def dB2g(dB=0.0):
     # dB = 20 * log10 (g)
@@ -22,15 +24,24 @@ def dB2g(dB=0.0):
     return 10 ** (dB/20.0)
 
 if __name__ == "__main__":
+    
+    gaindB = 0.0
+    capturePorts = "system:capture"
+    playbackPorts = ""
 
-    if len(sys.argv) == 2:
-        gaindB = float(sys.argv[1])
-    else:
-        print __doc__
-        sys.exit()
+    for opc in sys.argv[1:]:
+        if opc[:2] == "-g":
+            gaindB = float(opc[2:])
+        elif opc[:2] == "-c":
+            capturePorts = str(opc[2:])
+        elif opc[:2] == "-p":
+            playbackPorts = str(opc[2:])
+        else:
+            print __doc__
+            sys.exit()
 
     # Nos atachamos a jackd
-    jack.attach("capture_gain")
+    jack.attach("cable_gain")
 
     # Creamos los puertos de esta instancia
     for c in channels:
@@ -40,10 +51,12 @@ if __name__ == "__main__":
     # Activamos los puertos
     jack.activate()
 
-    # Los conectamos a la entrada analogica:
-    for c in channels:
-        jack.connect("system:capture_"+c, "capture_gain:in_"+c)
-
+    # Los conectamos a un puerto de captura y a un puerto de playback:
+    if capturePorts:
+        conecta(capturePorts, "cable_gain")
+    if playbackPorts:
+        conecta(playbackPorts, "cable_gain")
+        
     # Tomamos nota de la Fs y del buffer_size en JACK:
     Fs =            float(jack.get_sample_rate())
     buffer_size =   jack.get_buffer_size()
