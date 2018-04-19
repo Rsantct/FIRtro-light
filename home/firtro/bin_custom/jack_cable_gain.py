@@ -79,7 +79,7 @@ if __name__ == "__main__":
     if source:
         conecta(source, "cable_gain")
     if sink:
-        conecta(sink, "cable_gain")
+        conecta("cable_gain", sink)
 
     while True:
         pass
