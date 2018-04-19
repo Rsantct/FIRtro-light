@@ -67,7 +67,7 @@ if __name__ == "__main__":
             source = str(opc.split("=")[-1])
         elif opc.startswith("sink="):
             sink = str(opc.split("=")[-1])
-        elif opc == -d:
+        elif opc == "-d":
             disconnect = True
         elif "-h" in opc:
             print __doc__
