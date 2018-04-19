@@ -21,28 +21,26 @@
 #     #in_ports:   system:capture_1 system:capture_2
 #     in_ports:    capture_gain:out_1 capture_gain:out_2
 #
-# La ganancia se puede reajustar ejecutando capture_gain.sh, por ejemplo:
-#
-#    $ ~/bin_custom/capture_gain.sh +3.0
-#
 
-gaindB=0.0
+gaindB=6.0
 if [ $1 ]; then
     gaindB=$1
 fi
 
-patched=$(grep capture_gain.sh /home/firtro/bin/initfirtro.py)
+isPatched=$(grep capture_gain.sh /home/firtro/bin/initfirtro.py)
 
-if [[ $patched == "" ]]; then
+if [[ $isPatched == "" ]]; then
     echo "(i) patcheando initfirtro.py"
-    echo "" \
-        >> /home/firtro/bin/initfirtro.py
+    echo "" >> /home/firtro/bin/initfirtro.py
     echo "    # Patch para disponer de un puerto Jack con una ganancia sobre system:capture" \
-        >> /home/firtro/bin/initfirtro.py
+         >> /home/firtro/bin/initfirtro.py
     echo "    # https://github.com/Rsantct/FIRtro-light/wiki/205-sound-card-analog-input" \
-        >> /home/firtro/bin/initfirtro.py
-    echo   "    Popen('/home/firtro/bin_custom/capture_gain.sh "$gaindB"', shell=True)" \
-        >> /home/firtro/bin/initfirtro.py
+         >> /home/firtro/bin/initfirtro.py
+    echo "    Popen('kill -KILL $(pgrep -fl jack_cable_gain)', shell=True)" \
+         >> /home/firtro/bin/initfirtro.py
+    echo "    Popen('/home/firtro/bin_custom/jack_cable_gain.py source=system sink=brutefir \
+                     -d name=capture_gain -g="$gaindB"', shell=True)" \
+         >> /home/firtro/bin/initfirtro.py
 else
     echo "(i) ya estaba patcheado initfirtro.py"
 fi
