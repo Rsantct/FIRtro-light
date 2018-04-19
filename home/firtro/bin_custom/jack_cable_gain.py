@@ -25,8 +25,8 @@ def conecta (a, b):
     Bports = [x for x in jack.get_ports() if b in x]
     # lista de puertos B que son de playback
     Bports = [x for x in Bports if jack.get_port_flags(x) % 2 == 1 ]
-    #print "Aports de captura:", Aports
-    #print "Bports de playback:", Bports
+    print "Aports de captura:", Aports
+    print "Bports de playback:", Bports
 
     # Recorremos A y lo vamos conectando a B
     while Aports:
