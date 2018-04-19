@@ -79,9 +79,6 @@ if __name__ == "__main__":
     if sink:
         conecta("cable_gain", sink)
 
-    while True:
-        pass
-
     # Tomamos nota de la Fs y del buffer_size en JACK:
     Fs =            float(jack.get_sample_rate())
     buffer_size =   jack.get_buffer_size()
