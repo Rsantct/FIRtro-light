@@ -7,12 +7,14 @@
     Está pensado para tarjetas de sonido con poca sensibilidad en la
     entrada analógica, como es el caso de la tarjeta I2S 'audioinjector' para RPI
 
-    Uso:    capture_gain.py g=gaindB [source=jack_name] [sink=jack_name] [channels=N] [-d]
+    Uso y opciones:    
+    
+        jack_cable_gain.py g=gaindB [source=jackName] [sink=jackName] [channels=N] [-d]
 
             -d          desconecta source y sink al inicio (el cable se insertará)
             channels    canales del cable (por defecto 2)
-            source      cliente que se conectará a la entrada del cable
-            sink        cliente que se conectará a la salida del cable
+            source      cliente jack que se conectará a la entrada del cable
+            sink        cliente jack que se conectará a la salida del cable
 """
 
 import sys
@@ -20,15 +22,15 @@ import jack
 import numpy as np
 
 def conecta (a, b, mode="connect"):
-    """ conecta puertos a de captura con b de playback
+    """ conecta puertos de captura con puertos de playback
     """
-    # lista de puertos A
+    # Lista de puertos A
     Aports = [x for x in jack.get_ports() if a in x]
-    # lista de puertos A que son de captura
+    # y filtramos los de captura
     Aports = [x for x in Aports if jack.get_port_flags(x) % 2 == 0 ]
-    # lista de puertos B
+    # Lista de puertos B
     Bports = [x for x in jack.get_ports() if b in x]
-    # lista de puertos B que son de playback
+    # y filtramos los de playback
     Bports = [x for x in Bports if jack.get_port_flags(x) % 2 == 1 ]
 
     # Recorremos A y lo vamos (des)conectando con B
@@ -40,8 +42,7 @@ def conecta (a, b, mode="connect"):
             if mode == 'disconnect':
                 jack.disconnect(p1, p2)
             else:
-                jack.connect(p1, p2)
-                
+                jack.connect(p1, p2)                
         except:
             pass
 
@@ -55,14 +56,18 @@ if __name__ == "__main__":
     gaindB = 0.0
     # Canales del cable, por defecto 2
     nchannels = 2
-    # Puertos a conectar en la entrada y en la salida del cable
+    # 'source': cliente jack a conectar en la entrada del cable:
     source = ""
+    # 'sink':   cliente jack a conectar en la salida del cable:
     sink = ""
+    # Boolean para desconectar la source y el sink indicados:
     disconnect = False
 
     for opc in sys.argv[1:]:
+
         if opc.startswith("channels="):
             nchannels = int(opc.split("=")[-1])
+        elif opc.startswith("g="):
             gaindB = float(opc.split("=")[-1])
         elif opc.startswith("source="):
             source = str(opc.split("=")[-1])
@@ -101,7 +106,7 @@ if __name__ == "__main__":
 
     print "buffer: " + str(buffer_size), "delay: " + str(round(buffer_size/Fs*1000, 1)) + "ms"
 
-    # Arrays buffer para procesar nuestros puertos con jack.process()
+    # Arrays buffer para procesar los puertos registrados por esta instancia con jack.process()
     # https://github.com/rknLA/pyjack
     ai = np.zeros( (nchannels, buffer_size), dtype="f")
     ao = np.zeros( (nchannels, buffer_size), dtype="f")
