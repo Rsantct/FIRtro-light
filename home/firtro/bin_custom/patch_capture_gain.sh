@@ -27,7 +27,7 @@ if [ $1 ]; then
     gaindB=$1
 fi
 
-isPatched=$(grep capture_gain.sh /home/firtro/bin/initfirtro.py)
+isPatched=$(grep capture_gain /home/firtro/bin/initfirtro.py)
 
 if [[ $isPatched == "" ]]; then
     echo "(i) patcheando initfirtro.py"
