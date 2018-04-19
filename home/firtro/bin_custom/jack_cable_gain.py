@@ -4,17 +4,17 @@
     v0.1beta
     Script para poner un cable con ganancia ajustable en Jack
 
-    Está pensado para tarjetas de sonido con poca sensibilidad en la
-    entrada analógica, como es el caso de la tarjeta I2S 'audioinjector' para RPI
+    Uso y opciones:
 
-    Uso y opciones:    
-    
-        jack_cable_gain.py g=gaindB [source=jackName] [sink=jackName] [channels=N] [-d]
+        jack_cable_gain.py g=gaindB [source=jackName] [sink=jackName]
+                           [channels=N] [-d] [name=jackName]
 
+            g=          ganancia del cable en dB
             -d          desconecta source y sink al inicio (el cable se insertará)
-            channels    canales del cable (por defecto 2)
-            source      cliente jack que se conectará a la entrada del cable
-            sink        cliente jack que se conectará a la salida del cable
+            channels=   canales del cable (por defecto 2)
+            source=     cliente Jack que se conectará a la entrada del cable
+            sink=       cliente Jack que se conectará a la salida del cable
+            name=       nombre de este cliente en Jack
 """
 
 import sys
@@ -42,7 +42,7 @@ def conecta (a, b, mode="connect"):
             if mode == 'disconnect':
                 jack.disconnect(p1, p2)
             else:
-                jack.connect(p1, p2)                
+                jack.connect(p1, p2)
         except:
             pass
 
@@ -62,25 +62,35 @@ if __name__ == "__main__":
     sink = ""
     # Boolean para desconectar la source y el sink indicados:
     disconnect = False
+    # Nombre en jack del cable
+    ownname = "cable_gain"
 
     for opc in sys.argv[1:]:
 
         if opc.startswith("channels="):
             nchannels = int(opc.split("=")[-1])
+
         elif opc.startswith("g="):
             gaindB = float(opc.split("=")[-1])
+
         elif opc.startswith("source="):
             source = str(opc.split("=")[-1])
+
         elif opc.startswith("sink="):
             sink = str(opc.split("=")[-1])
+
+        elif opc.startswith("name="):
+            ownname = str(opc.split("=")[-1])
+
         elif opc == "-d":
             disconnect = True
+
         elif "-h" in opc:
             print __doc__
             sys.exit()
 
     # Nos atachamos a jackd
-    jack.attach("cable_gain")
+    jack.attach(ownname)
 
     # Creamos los puertos de esta instancia
     for i in range(1, 1 + nchannels):
@@ -94,11 +104,11 @@ if __name__ == "__main__":
     if source:
         if disconnect:
             conecta(source, sink, mode='disconnect')
-        conecta(source, "cable_gain", mode='connect')
+        conecta(source, ownname, mode='connect')
     if sink:
         if disconnect:
             conecta(source, sink, mode='disconnect')
-        conecta("cable_gain", sink, mode='connect')
+        conecta(ownname, sink, mode='connect')
 
     # Tomamos nota de la Fs y del buffer_size en JACK:
     Fs =            float(jack.get_sample_rate())
