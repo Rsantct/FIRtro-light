@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
     v0.1beta
-    Script para tener un cable con ganancia en Jack
+    Script para poner un cable con ganancia ajustable en Jack
 
     Está pensado para tarjetas de sonido con poca sensibilidad en la
     entrada analógica, como es el caso de la tarjeta I2S 'audioinjector' para RPI
