@@ -84,14 +84,14 @@ if __name__ == "__main__":
     # Activamos los puertos
     jack.activate()
 
-    # Los conectamos los puertos de captura y playback deseados:
+    # Conectamos los puertos de captura y playback deseados:
     if source:
         if disconnect:
-            conecta(source, "cable_gain", mode='disconnect')
+            conecta(source, sink, mode='disconnect')
         conecta(source, "cable_gain", mode='connect')
     if sink:
         if disconnect:
-            conecta("cable_gain", sink, mode='disconnect')
+            conecta(source, sink, mode='disconnect')
         conecta("cable_gain", sink, mode='connect')
 
     # Tomamos nota de la Fs y del buffer_size en JACK:
