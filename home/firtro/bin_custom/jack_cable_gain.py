@@ -91,7 +91,7 @@ if __name__ == "__main__":
         conecta(source, "cable_gain", mode='connect')
     if sink:
         if disconnect:
-            conecta("cable_gain", sink, mode='disconnec't)
+            conecta("cable_gain", sink, mode='disconnect')
         conecta("cable_gain", sink, mode='connect')
 
     # Tomamos nota de la Fs y del buffer_size en JACK:
