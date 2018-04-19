@@ -8,10 +8,10 @@
     entrada analógica, como es el caso de la tarjeta I2S 'audioinjector' para RPI
 
     Uso:    capture_gain.py g=gaindB [source=jack_name] [sink=jack_name] [channels=N] [-d]
+            -d          desconecta source y sink al inicio (el cable se insertará)
             channels    canales del cable (por defecto 2)
             source      cliente que se conectará a la entrada del cable
             sink        cliente que se conectará a la salida del cable
-            -d          desconecta source y sink
 """
 
 import sys
