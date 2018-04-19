@@ -36,11 +36,14 @@ if [[ $isPatched == "" ]]; then
          >> /home/firtro/bin/initfirtro.py
     echo "    # https://github.com/Rsantct/FIRtro-light/wiki/205-sound-card-analog-input" \
          >> /home/firtro/bin/initfirtro.py
-    echo "    Popen('pkill -f jack_cable_gain.py)', shell=True)" \
+    echo "    Popen('pkill -KILL -f jack_cable_gain.py', shell=True)" \
          >> /home/firtro/bin/initfirtro.py
-    echo "    Popen('/home/firtro/bin_custom/jack_cable_gain.py source=system sink=brutefir \\"
-    echo "           -d name=capture_gain -g="$gaindB"', shell=True)" \
+    echo "    sleep(.5)"  >> /home/firtro/bin/initfirtro.py
+    echo "    Popen('/home/firtro/bin_custom/jack_cable_gain.py source=system sink=brutefir \\" \
+         >> /home/firtro/bin/initfirtro.py
+    echo "           -d name=capture_gain -g="$gaindB" &', shell=True)" \
          >> /home/firtro/bin/initfirtro.py
 else
     echo "(i) ya estaba patcheado initfirtro.py"
 fi
+
