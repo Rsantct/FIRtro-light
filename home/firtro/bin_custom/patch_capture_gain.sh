@@ -27,6 +27,15 @@ if [ $1 ]; then
     gaindB=$1
 fi
 
+# Averiguamos los puertos de entrada a FIRtro
+FIRtroUsaEcasound=$(grep load_ecasound /home/firtro/audio/config | grep -v ";" | cut -d"=" -f2)
+if [[ $FIRtroUsaEcasound == *"False"* ]]; then
+    FIRtroPorts=brutefir
+else
+    FIRtroPorts=ecasound
+fi
+
+# Comprobamos si initfirtrosya estuviera patcheado
 isPatched=$(grep capture_gain /home/firtro/bin/initfirtro.py)
 
 if [[ $isPatched == "" ]]; then
@@ -45,11 +54,10 @@ if [[ $isPatched == "" ]]; then
     echo "    sleep(.5)"  >> /home/firtro/bin/initfirtro.py
 
     # Lanza jack_cable_gain.py:
-    echo "    Popen('/home/firtro/bin_custom/jack_cable_gain.py source=system sink=brutefir \\" \
+    echo "    Popen('/home/firtro/bin_custom/jack_cable_gain.py source=system sink="$FIRtroPorts" \\" \
          >> /home/firtro/bin/initfirtro.py
     echo "           -d name=capture_gain -g="$gaindB" &', shell=True)" \
          >> /home/firtro/bin/initfirtro.py
 else
     echo "(i) ya estaba patcheado initfirtro.py"
 fi
-
