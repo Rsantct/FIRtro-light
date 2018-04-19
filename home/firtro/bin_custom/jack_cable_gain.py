@@ -87,8 +87,8 @@ if __name__ == "__main__":
 
     # Arrays buffer para procesar nuestros puertos con jack.process()
     # https://github.com/rknLA/pyjack
-    ai = np.zeros( (len(nchannels), buffer_size), dtype="f")
-    ao = np.zeros( (len(nchannels), buffer_size), dtype="f")
+    ai = np.zeros( (nchannels, buffer_size), dtype="f")
+    ao = np.zeros( (nchannels, buffer_size), dtype="f")
 
     # Loop infinito:
     print "capturing audio"
