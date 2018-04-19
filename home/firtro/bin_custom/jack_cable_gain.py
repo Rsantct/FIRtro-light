@@ -148,11 +148,10 @@ if __name__ == "__main__":
             overruns += 1
             print "output sync warnings: " + str(overruns)
 
-        xruns = underruns + overruns
-        if xruns > 100:
-            #print "esto se sale de madre"
-            #break
-            pass
+        #xruns = underruns + overruns
+        #if xruns > 100:
+        #    print "esto se sale de madre"
+        #    break
 
     #jack.deactivate()
     #jack.detach()
