@@ -20,14 +20,12 @@ if [[ $1 ]]; then
     if [[ $1 == "on" || $1 == "1" ]]; then
         tmp="BITFT_1=1"
     fi
-    #cmd="sudo /home/pi/bin/usbrelay "$tmp
-    cmd="/home/pi/bin/usbrelay "$tmp
+    cmd="$HOME/bin_custom/usbrelay "$tmp
     $cmd
     #ssh pi@rpi3clac $cmd
 fi
 # Vemos el estado del relé.
-#cmd="sudo /home/pi/bin/usbrelay"
-cmd="/home/pi/bin/usbrelay"
+cmd="$HOME/bin_custom/usbrelay"
 eval $($cmd)
 #eval $(ssh pi@rpi3clac $cmd)
 # EL resultado son variables BITFT_1=x y BITFT_2=y, con x,y in (0,1)
