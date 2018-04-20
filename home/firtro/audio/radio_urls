@@ -6,4 +6,4 @@ radio3          = "http://rtve-mp3-radiolive.flumotion.com/rtve/rtve-radio3.mp3.
 radioclasica    = "http://rtve-mp3-radiolive.flumotion.com/rtve/rtve-radioclasica.mp3.m3u"
 m80             = "http://playerservices.streamtheworld.com/api/livestream-redirect/M80RADIO_SC"
 los40           = "http://19073.live.streamtheworld.com:3690/LOS40AAC_SC"
-m80             = "http://playerservices.streamtheworld.com/api/livestream-redirect/M80RADIO_SC"
+
