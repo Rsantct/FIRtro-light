@@ -7,26 +7,40 @@
 #
 
 # Parche para usar FIRtro en una Raspberry Pi 1
-su -l firtro -c "/home/firtro/bin_custom/patch_firtro_rpi1.sh"
+# su -l firtro -c "/home/firtro/bin_custom/patch_firtro_rpi1.sh"
 
-# Inicia FIRtro
+# Parche para ganacia en la entrada analogica, ponemos 15 dB
+# https://github.com/Rsantct/FIRtro-light/wiki/205-sound-card-analog-input
+# su -l firtro -c "/home/firtro/bin_custom/patch_capture_gain.sh 15"
+
+# FIRtro
 su -l firtro -c "/home/firtro/bin/initfirtro.py "
 
-# Solo para tarjeta de sonido I2S Cirrus o Wolfson
-# (aunque FIRtro debería tenerla bien configurada)
-su -l firtro -c "/home/pi/bin_cirrus/Playback_to_Lineout.sh"
-su -l firtro -c "/home/pi/bin_cirrus/Record_from_Linein.sh"
-
-# Cliente Spotify via ALSA
-su -l firtro -c "/home/firtro/bin_custom/librespot_watchdog.sh &"
+# Cliente Spotify via ALSA OjO puede ser necesario bajar bitrate a 160
+su -l firtro -c "/home/firtro/bin_custom/librespot_watchdog.sh 320 &"
 
 # Receptor Bluetooth via ALSA
 su -l firtro -c "/home/firtro/bin_custom/escuchaBT.py &"
 
+# Solo para RPI < 3
 # https://wiki.linuxaudio.org/wiki/raspberrypi
-for cpu in /sys/devices/system/cpu/cpu[0-9]*; do echo -n performance | tee $cpu/cpufreq/scaling_governor; done
+# for cpu in /sys/devices/system/cpu/cpu[0-9]*; do echo -n performance | tee $cpu/cpufreq/scaling_governor; done
 
 # Volumen controlado con el ratón en 2.0 dBs con beep si headroom < 6.0 dB
 su -l firtro -c "/home/firtro/bin_custom/mouse_volume_daemon.py -s2.0 -b6.0 &"
+
+# Enciende los amplis:
+/home/firtro/bin_custom/ampli.sh on
+
+# Solo para tarjeta de sonido I2S Cirrus o Wolfson
+# (aunque FIRtro debería tenerla bien configurada)
+#su -l firtro -c "/home/pi/bin_cirrus/Playback_to_Lineout.sh"
+#su -l firtro -c "/home/pi/bin_cirrus/Record_from_Linein.sh"
+
+# La tarjeta audioinjector cuando menos te lo esperas deja de capturar por Line IN:
+#amixer -c audioinjectorpi sset 'Input Mux' 'Line In'
+#amixer -c audioinjectorpi cset name='Line Capture Switch' on,on
+
+
 
 exit 0
