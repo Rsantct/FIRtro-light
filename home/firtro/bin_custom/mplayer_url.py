@@ -6,8 +6,8 @@ from subprocess import Popen
 from ConfigParser import ConfigParser
 import sys
 
-#device = "-ao alsa:device=hw=ALSA"
-device = "-ao jack:name=mplayer_url:port=ecasound"
+#device = " -ao alsa:device=hw=ALSA"
+device = " -ao jack:name=mplayer_url:port=ecasound"
 
 urls_file = "/home/firtro/audio/radio_urls"
 emisoras = ConfigParser()
@@ -23,7 +23,8 @@ if __name__ == "__main__":
         time.sleep(1)
 
         emisoraUrl = emisoras.get("emisoras", emisoraName)
-        opcionesMplayer = device
+        opcionesMplayer = " -nolirc -quiet"
+        opcionesMplayer += device
 
         # Apaño las de RTVE vienen en formato playlits que contiene el stream final mp3.
         # Pero mplayer no lo permite: "Playlist parsing disabled for security reasons."
@@ -31,7 +32,6 @@ if __name__ == "__main__":
         #   - Por comodidad optamos por permitir el parseo de playlist.
         if "rtve" in emisoraUrl:
             opcionesMplayer += " -allow-dangerous-playlist-parsing"
-
 
         Popen("mplayer " + emisoraUrl + " " + opcionesMplayer, shell=True)
 
