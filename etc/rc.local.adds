@@ -20,7 +20,7 @@ su -l firtro -c "/home/firtro/bin/initfirtro.py "
 su -l firtro -c "/home/firtro/bin_custom/librespot_watchdog.sh 320 &"
 
 # Receptor Bluetooth via ALSA
-su -l firtro -c "/home/firtro/bin_custom/escuchaBT.py &"
+su -l firtro -c "/home/firtro/bin_custom/bluealsa-aplay_watchdog.sh &"
 
 # Solo para RPI < 3
 # https://wiki.linuxaudio.org/wiki/raspberrypi
