@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """
     Cutre script para recibir audio de dispositivos BT
+    SUSTITUIDO por bluealsa-aplay_watchdog.sh, basado directamente en 'bluealsa-aplay'
 """
 import time
 import sys
