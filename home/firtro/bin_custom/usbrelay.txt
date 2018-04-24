@@ -1,0 +1,7 @@
+El BINARIO para arm (Raspberry Pi) 'usbrelay' sirve para el funcioanamiento del script 'ampli.sh'
+
+Más info:
+
+https://github.com/Rsantct/FIRtro-light/wiki/00-Firtro-light#relé-para-encendido-y-apagado-de-un-amplificador
+https://github.com/AudioHumLab/FIRtro/wiki/830-Control-de-un-módulo-de-relés#módulo-de-relés-usb-low-cost
+
