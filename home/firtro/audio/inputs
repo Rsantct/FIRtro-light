@@ -7,8 +7,17 @@ xo:         mp
 lirc_event:     
 resampled:  no
 
-[none]
-in_ports:   none none
+[tv]
+in_ports:   system:capture_1 system:capture_2
+fs:         44100
+clock:      card
+gain:       0.0
+xo:         mp
+lirc_event:     
+resampled:  no
+
+[internals]
+in_ports:   fake fake
 fs:         44100
 clock:      card
 gain:       0.0
