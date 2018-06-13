@@ -1,3 +1,4 @@
 #!/bin/bash
 
-sudo reboot
+/home/firtro/bin_custom/ampli_on_off.sh
+
