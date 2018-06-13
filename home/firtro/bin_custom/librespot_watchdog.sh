@@ -73,10 +73,10 @@ while true; do
     # Si son necesarios muchos reinicios suele ser un bug con la red,
     # no queda otro remedio que reinicar la maquina :-/
     if (( $reintentos > 3 )); then
-        echo "("$(basename $0)") ¡¡¡Reiniciando la máquina!!!"
+        echo "("$(basename $0)") ¡¡¡Demasiados reinicios de librespot, se aconseja actualizarlo desde github!!!"
         sleep 1
-        sudo reboot &
-        exit 0
+        #sudo reboot &
+        #exit 0
     fi
 
     sleep $loop_timer
