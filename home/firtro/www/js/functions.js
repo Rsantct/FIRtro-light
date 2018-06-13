@@ -1,12 +1,3 @@
-///////////////////////////////////////////////
-//////// VERSION PARA INDEX.PHP LIGHT//////////
-///////////////////////////////////////////////
-// - Cambios menores en la presentación de las strings del display de la level_page
-// - Traslado del paquete de 9 varibles de custom a la inicializacion de la level_page
-//     $("#custom_1").attr('value', $config['btn_txt_1']).button('refresh');
-//     ... etc
-
-
 /////////////////////////////////////////
 ////////////*** VARIABLES ***////////////
 /////////////////////////////////////////
@@ -1047,4 +1038,3 @@ $(document).on('pagechange', function(event){
     //la propia función se encargará de actualizar los datos, sino no hará nada
     send_command( "status", "0");
 });
-
