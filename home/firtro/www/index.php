@@ -51,7 +51,7 @@
 
 
     <!-- ********************** -->
-    <!-- ** Página principal VERSION LIGHT** -->
+    <!-- ** Página principal ** -->
     <!-- ********************** -->
 
     <div data-role="page" class="type-interior" id="level_page">
@@ -223,6 +223,8 @@
         </div><!-- /footer -->
 
     </div>
+
+
 
 </body>
 </html>
