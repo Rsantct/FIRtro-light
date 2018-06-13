@@ -70,8 +70,7 @@ while true; do
 
     fi
 
-    # Si son necesarios muchos reinicios suele ser un bug con la red,
-    # no queda otro remedio que reinicar la maquina :-/
+    # Si son necesarios muchos reinicios suele ser un bug
     if (( $reintentos > 3 )); then
         echo "("$(basename $0)") ¡¡¡Demasiados reinicios de librespot, se aconseja actualizarlo desde github!!!"
         sleep 1
