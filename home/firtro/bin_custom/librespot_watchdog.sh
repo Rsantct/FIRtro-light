@@ -6,7 +6,7 @@
 alsaDevice=jack
 loop_timer=15
 #
-bitrate=160
+bitrate=320
 # 96 (low quality), 160 (default quality), or 320 (high quality)
 # OjO bitrate 320 puede ser excesiva carga de CPU
 # Bitrate opcional por command line:
@@ -41,13 +41,16 @@ fi
 # Archivo de log de reinicios de 'librespot'
 flog=$(echo $(basename $0) | cut -d"." -f1)".log"
 
-# función para arrancar librespot:
+# Función para arrancar librespot.
+# Un ejemplo de comando:
+# /usr/bin/librespot --name raspotify (rpi3halcon) --backend alsa --bitrate 160 \
+#                    --disable-audio-cache --enable-volume-normalisation --linear-volume --initial-volume=100
 function arranca_librespot {
     echo  "("$(basename $0)") Arrancando librespot ..."
     pkill -f -KILL "bin/librespot"   # > /dev/null
     sleep .5
     /usr/bin/librespot --name $(hostname) --backend alsa --device $alsaDevice --bitrate $bitrate \
-                       --disable-audio-cache &
+                       --disable-audio-cache --initial-volume=100 &
 }
 
 # Primer arranque:
