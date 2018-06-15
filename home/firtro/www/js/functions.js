@@ -1,3 +1,7 @@
+//
+//     V2.1 FIRtro-LIGHT (ver cambios en index.php)
+//
+
 /////////////////////////////////////////
 ////////////*** VARIABLES ***////////////
 /////////////////////////////////////////
@@ -254,7 +258,10 @@ String.prototype.rpad = function(padString, length) {
     return str;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////
 // Actualización de los valores de la página
+///////////////////////////////////////////////////////////////////////////////////////////
+
 function update_controls () {
 
     // Nombre del altavoz en el título de la página
@@ -325,6 +332,45 @@ function update_controls () {
             $("#info_sta").text(":: " + $state + " ::");
             
             break;
+
+        case 'light_page':
+        
+
+            if ($php_data['muted'] == true) {
+                $("#level_displayL1").text("volume: " + $php_data["level"] + " dB (MUTED)");
+            }
+            else {
+                $("#level_displayL1").text("VOLUME " + $php_data["level"] + " dB"); 
+            }
+                        
+            if ($php_data['loudness_track']==true)  $("#level_displayL22").text("LOUDNS: ON");
+            else                                    $("#level_displayL22").text("loudns: off");
+                        
+            if ($php_data["system_eq"] == false) {
+                $system_eq = "OFF";
+                $("#level_displayL32").text("syseq: off");
+            }
+            else {
+                $system_eq = "ON";
+                $("#level_displayL32").text("SYSEQ: ON");
+            }
+            
+            $("#level_displayL51").text("Input: " +          $php_data["input_name"]);
+            
+            // Array de warnings
+            if ($php_data['warnings'] != "") {
+                $php_data['warnings'].forEach(function(item) {
+                if ($first_item) {
+                    $("#level_displayL6").text("Warning: "+item);
+                    $first_item=false;
+                }
+                else $("#level_displayL6").append("<br/>"+item);
+                });    
+            }
+            else $("#level_displayL6").text("");
+
+            break;
+
         
         case 'level_page':
         
@@ -340,33 +386,27 @@ function update_controls () {
             }
 
             if ($php_data['muted'] == true) {
-                $("#level_display1").text("volume: " + $php_data["level"] + " dB (MUTED)");
+                $("#level_display1").text("Volume: " + $php_data["level"] + " dB (MUTED)");
             }
             else {
                 //$("#level_display1").text("Volume: " + $php_data["level"] + " dB (HR: " + $php_data["headroom"] + " dB)"); 
-                $("#level_display1").text("VOLUME " + $php_data["level"] + " dB"
-                                          //+ " / Hr " + $php_data["headroom"] + " dB"
-                                          //+ " / Bal " + $php_data["balance"]
+                $("#level_display1").text("VOL " + $php_data["level"] + " dB"
+                                          + " / Hr " + $php_data["headroom"] + " dB"
+                                          + " / Bal " + $php_data["balance"]
                                           ); 
             }
             
             $("#level_display21").text("FS: " + $php_data["fs"] + " Hz");
             
-            if ($php_data['loudness_track']==true)  $("#level_display22").text("LOUDNS: ON");
-            else                                    $("#level_display22").text("loudns: off");
+            if ($php_data['loudness_track']==true)  $("#level_display22").text("Loudness: ON");
+            else                                    $("#level_display22").text("Loudness: OFF");
             
             $("#level_display31").text("DRC: " + $php_data["drc_eq"]);
             
-            if ($php_data["system_eq"] == false) {
-                $system_eq = "OFF";
-                $("#level_display32").text("syseq: off");
-            }
-            else {
-                $system_eq = "ON";
-                $("#level_display32").text("SYSEQ: ON");
-            }
+            if ($php_data["system_eq"] == false)    $system_eq = "OFF";
+            else                                    $system_eq = "ON";
             
-            
+            $("#level_display32").text("SysEQ: " +          $system_eq);
             $("#level_display41").text("Bass: " +           $php_data["bass"]);
             $("#level_display42").text("Treble: " +         $php_data["treble"]);
             $("#level_display51").text("Input: " +          $php_data["input_name"]);
@@ -753,7 +793,9 @@ $(document).on('pageinit', function(){
     //changeGlobalTheme($config['global_theme']);    
 });
 
+///////////////////////////////////////////////////////////////////////////////////////////
 // Inicializaciones por página. Se ejecutan la primera vez que se carga la página:
+///////////////////////////////////////////////////////////////////////////////////////////
 
 $(document).on('pageinit', '#info_page', function(){
     if ($php_data) {
@@ -798,6 +840,23 @@ $(document).on('pageinit', '#info_page', function(){
     }
 });
 
+$(document).on('pageinit', '#light_page', function(){
+
+    // Simplemente actualiza los values de los botones que se muestran en la light_page de index.php
+    // al igual que se hace con los botones de la custom_page original
+    $("#customL_1").attr('value', $config['btn_txt_1']).button('refresh');
+    $("#customL_2").attr('value', $config['btn_txt_2']).button('refresh');
+    $("#customL_3").attr('value', $config['btn_txt_3']).button('refresh');
+    $("#customL_4").attr('value', $config['btn_txt_4']).button('refresh');
+    $("#customL_5").attr('value', $config['btn_txt_5']).button('refresh');
+    $("#customL_6").attr('value', $config['btn_txt_6']).button('refresh');
+    $("#customL_7").attr('value', $config['btn_txt_7']).button('refresh');
+    $("#customL_8").attr('value', $config['btn_txt_8']).button('refresh');
+    $("#customL_9").attr('value', $config['btn_txt_9']).button('refresh');
+
+});
+
+
 $(document).on('pageinit', '#level_page', function(){
 
     // También podemos hacer una única funcion generica pageinit:
@@ -818,17 +877,6 @@ $(document).on('pageinit', '#level_page', function(){
         send_command (event.currentTarget.name, event.currentTarget.value);
         event.preventDefault();
     });
-    
-    // trasladado de la custom_page
-    $("#custom_1").attr('value', $config['btn_txt_1']).button('refresh');
-    $("#custom_2").attr('value', $config['btn_txt_2']).button('refresh');
-    $("#custom_3").attr('value', $config['btn_txt_3']).button('refresh');
-    $("#custom_4").attr('value', $config['btn_txt_4']).button('refresh');
-    $("#custom_5").attr('value', $config['btn_txt_5']).button('refresh');
-    $("#custom_6").attr('value', $config['btn_txt_6']).button('refresh');
-    $("#custom_7").attr('value', $config['btn_txt_7']).button('refresh');
-    $("#custom_8").attr('value', $config['btn_txt_8']).button('refresh');
-    $("#custom_9").attr('value', $config['btn_txt_9']).button('refresh');
     
 });
 
@@ -946,37 +994,42 @@ $(document).on('pageinit', '#media_page', function(){
     });
 });
 
-//$(document).on('pageinit', '#custom_page', function(){
-//
-//    $("#custom_1").attr('value', $config['btn_txt_1']).button('refresh');
-//    $("#custom_2").attr('value', $config['btn_txt_2']).button('refresh');
-//    $("#custom_3").attr('value', $config['btn_txt_3']).button('refresh');
-//    $("#custom_4").attr('value', $config['btn_txt_4']).button('refresh');
-//    $("#custom_5").attr('value', $config['btn_txt_5']).button('refresh');
-//    $("#custom_6").attr('value', $config['btn_txt_6']).button('refresh');
-//    $("#custom_7").attr('value', $config['btn_txt_7']).button('refresh');
-//    $("#custom_8").attr('value', $config['btn_txt_8']).button('refresh');
-//    $("#custom_9").attr('value', $config['btn_txt_9']).button('refresh');
-//    
-//    // Tambien se puede hacer asi:
-//    //$("#custom_1").val($config['btn_txt_1']).button('refresh')
-//    
-//});
+$(document).on('pageinit', '#custom_page', function(){
+
+    $("#custom_1").attr('value', $config['btn_txt_1']).button('refresh');
+    $("#custom_2").attr('value', $config['btn_txt_2']).button('refresh');
+    $("#custom_3").attr('value', $config['btn_txt_3']).button('refresh');
+    $("#custom_4").attr('value', $config['btn_txt_4']).button('refresh');
+    $("#custom_5").attr('value', $config['btn_txt_5']).button('refresh');
+    $("#custom_6").attr('value', $config['btn_txt_6']).button('refresh');
+    $("#custom_7").attr('value', $config['btn_txt_7']).button('refresh');
+    $("#custom_8").attr('value', $config['btn_txt_8']).button('refresh');
+    $("#custom_9").attr('value', $config['btn_txt_9']).button('refresh');
+    // Tambien se puede hacer asi:
+    //$("#custom_1").val($config['btn_txt_1']).button('refresh')
+});
 
 $(document).on('pageinit', '#config_page', function(){
 
     // Creamos la seccion de opciones de forma dinamica
-    // A los campos que almacenan los valores les llamamos "config_option" para poteriormente poder capturar los eventos de todos ellos en caso de que sus valores cambien
+    // A los campos que almacenan los valores les llamamos "config_option" para poteriormente poder 
+    // capturar los eventos de todos ellos en caso de que sus valores cambien.
     console.log("Reading options...");
+    
     $.each($config_ws, function(section) {
         console.log(section);
-        $('#config_cs').append('<div data-role="collapsible" id="'+section+'"><h3>'+capitalize(section)+'</h3><div id="'+section+'_content" data-role="content"></div>').trigger("create")
+        $('#config_cs').append('<div data-role="collapsible" id="'+section+'"><h3>'+capitalize(section) + 
+                               '</h3><div id="'+section+'_content" data-role="content"></div>')
+                               .trigger("create")
+                               
         if (section == "themes") {
             $themes_array = $config_ws['themes']['themes'].split(" ");
             //El primer elemento debería ser una cadena vacia, pero si no lo es, añado al final la opcion "default"
             if ($themes_array[0] == "") $themes_array[0] = "default";
                 else $themes_array.push("default");
-            $("#"+section+"_content").append('<select name="config_option" id="global_theme" data-icon="grid" data-native-menu="false"></select>').trigger("create");
+            $("#"+section+"_content").append('<select name="config_option" id="global_theme" data-icon="grid" data-native-menu="false"></select>')
+                                     .trigger("create");
+                                     
             $themes_array.forEach(function(value) {
                 if (value != "") $('#global_theme').append('<option value="'+value+'">'+value+'</option>');
             });
@@ -990,9 +1043,9 @@ $(document).on('pageinit', '#config_page', function(){
                 option_value=$config_ws[section][option]
                 console.log("\t"+option+": "+option_value)
                 $("#"+section+"_content").append('<div data-role="fieldcontain">'+
-                                                    '<label for="'+option+'">'+option+':</label>'+
-                                                    //'<input type="text" name="'+option+'" id="'+option+'" value="'+option_value+'">'+
-                                                    '<input type="text" name="config_option" id="'+option+'" value="'+option_value+'">'+
+                                                 '<label for="'+option+'">'+option+':</label>'+
+                                                  //'<input type="text" name="'+option+'" id="'+option+'" value="'+option_value+'">'+
+                                                 '<input type="text" name="config_option" id="'+option+'" value="'+option_value+'">'+
                                                  '</div>').trigger("create");
             });
         }

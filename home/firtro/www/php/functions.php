@@ -1,7 +1,7 @@
 <?php
-    // v2.0:
-    // - Comandos para la botonera de la nueva página "info"
-    // - Funciones para la gestión de los players.
+    //
+    //     V2.1 FIRtro-LIGHT (ver cambios en index.php)
+    //
 
     $config_file = "../config/config.ini";
     $config;
@@ -166,9 +166,12 @@
         if ($action == 'rew')       fifo_write ($fifoCddaPath, "seek -10");
     }
 
-    # Nuevo comando REBOOT usado en FIRtro-Light, úsese carefully
+    # Nuevos comandos REBOOT/POWEROFF para FIRtro-Light, úsese carefully
     if($command == 'reboot') {
         $json=firtro_socket ("exec reboot.sh");
+    }
+    elseif($command == 'poweroff') {
+        $json=firtro_socket ("exec poweroff.sh");
     }
     elseif($command == 'level_up') {
         $json=firtro_socket ("level_add 1");
