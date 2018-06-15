@@ -9,7 +9,8 @@
             
     V2.1 FIRtro-LIGHT
     Se pone como página inicial una botonera y un display simplificados para un uso básico.
-    Se rota entre las páginas con botones en la esquina sup izq  Light_page >> Info_page >> Main_page >>  Light_page
+    Se rota entre las páginas con botones en la esquina sup izq  
+	Light_page >> Info_page >> Main_page >>  Light_page
     
     Archivos afectados:
 
