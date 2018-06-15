@@ -3,9 +3,56 @@
 #
 # Cutre watchdog para arrancar librespot y vigilar que funcione
 #
+# v1.1
+#   Se añade un volumen inicial para evitar que arranque al 50%
+#   Se deja de reiniciar la máquina en caso de que este script renicie librespot
+#   Se deja bitrate 320 por defecto
+
+# Uso de librespot: 
+# Usage: /usr/bin/librespot [options]
+# 
+# Options:
+#     -c, --cache CACHE   Path to a directory where files will be cached.
+#         --disable-audio-cache 
+#                         Disable caching of the audio data.
+#     -n, --name NAME     Device name
+#         --device-type DEVICE_TYPE
+#                         Displayed device type
+#     -b, --bitrate BITRATE
+#                         Bitrate (96, 160 or 320). Defaults to 160
+#         --onevent PROGRAM
+#                         Run PROGRAM when playback is about to begin.
+#     -v, --verbose       Enable verbose output
+#     -u, --username USERNAME
+#                         Username to sign in with
+#     -p, --password PASSWORD
+#                         Password
+#         --proxy PROXY   HTTP proxy to use when connecting
+#         --disable-discovery 
+#                         Disable discovery mode
+#         --backend BACKEND
+#                         Audio backend to use. Use '?' to list options
+#         --device DEVICE Audio device to use. Use '?' to list options if using
+#                         portaudio
+#         --mixer MIXER   Mixer to use
+#         --initial-volume VOLUME
+#                         Initial volume in %, once connected (must be from 0 to
+#                         100)
+#         --zeroconf-port ZEROCONF_PORT
+#                         The port the internal server advertised over zeroconf
+#                         uses.
+#         --enable-volume-normalisation 
+#                         Play all tracks at the same volume
+#         --normalisation-pregain PREGAIN
+#                         Pregain (dB) applied by volume normalisation
+#         --linear-volume 
+#                         increase volume linear instead of logarithmic.
+
+
+# Nuestra CONFIGURACION:
 alsaDevice=jack
 loop_timer=15
-#
+# El bitrate se puede reajustar añadiéndolo $1 a la linea de comando de este script
 bitrate=320
 # 96 (low quality), 160 (default quality), or 320 (high quality)
 # OjO bitrate 320 puede ser excesiva carga de CPU
@@ -42,15 +89,17 @@ fi
 flog=$(echo $(basename $0) | cut -d"." -f1)".log"
 
 # Función para arrancar librespot.
-# Un ejemplo de comando:
+# Ejemplo de comando como es arrancado por defecto por el servicio estandar:
 # /usr/bin/librespot --name raspotify (rpi3halcon) --backend alsa --bitrate 160 \
 #                    --disable-audio-cache --enable-volume-normalisation --linear-volume --initial-volume=100
 function arranca_librespot {
     echo  "("$(basename $0)") Arrancando librespot ..."
     pkill -f -KILL "bin/librespot"   # > /dev/null
     sleep .5
+    # Aqui usamos vol=99 pq 100 da un warning a pesar de que no hemos habilitado la normalizacion ¿?
+    # WARN:librespot_playback::player: Reducing normalisation factor to prevent clipping. Please add negative pregain to avoid.
     /usr/bin/librespot --name $(hostname) --backend alsa --device $alsaDevice --bitrate $bitrate \
-                       --disable-audio-cache --initial-volume=100 &
+                       --disable-audio-cache --initial-volume=99 &
 }
 
 # Primer arranque:
