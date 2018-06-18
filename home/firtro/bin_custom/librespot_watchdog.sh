@@ -49,10 +49,14 @@
 #                         increase volume linear instead of logarithmic.
 
 
-# Nuestra CONFIGURACION:
+#//// nuestra CONFIGURACION:
+#backend=pulseaudio # OjO dtcooper/raspotify NO está compilado con el backend pulseaudio
+backend=alsa
 alsaDevice=jack
 loop_timer=15
-# El bitrate se puede reajustar añadiéndolo $1 a la linea de comando de este script
+#\\\\
+
+# El bitrate se puede sobreescribir añadiéndolo $1 a la linea de comando de este script
 bitrate=320
 # 96 (low quality), 160 (default quality), or 320 (high quality)
 # OjO bitrate 320 puede ser excesiva carga de CPU
@@ -96,10 +100,16 @@ function arranca_librespot {
     echo  "("$(basename $0)") Arrancando librespot ..."
     pkill -f -KILL "bin/librespot"   # > /dev/null
     sleep .5
-    # Aqui usamos vol=99 pq 100 da un warning a pesar de que no hemos habilitado la normalizacion ¿?
-    # WARN:librespot_playback::player: Reducing normalisation factor to prevent clipping. Please add negative pregain to avoid.
-    /usr/bin/librespot --name $(hostname) --backend alsa --device $alsaDevice --bitrate $bitrate \
+    beOpts='--backend '$backend' '
+    if [[ $beOpts == *"alsa"* ]]; then
+        beOpts+=" --device "$alsaDevice
+    fi
+    /usr/bin/librespot --name $(hostname) --bitrate $bitrate $beOpts \
                        --disable-audio-cache --initial-volume=99 &
+
+    # NOTA: usamos vol=99 pq 100 da un warning a pesar de que no hemos habilitado la normalizacion ¿?:
+    #         WARN:librespot_playback::player: Reducing normalisation factor to prevent clipping.
+    #              Please add negative pregain to avoid.
 }
 
 # Primer arranque:
