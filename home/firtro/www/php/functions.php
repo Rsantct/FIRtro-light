@@ -176,11 +176,17 @@
     elseif($command == 'level_up') {
         $json=firtro_socket ("level_add 1");
         }
+    elseif($command == 'level_up_2') {
+        $json=firtro_socket ("level_add 2");
+        }
     elseif($command == 'level_up_3') {
         $json=firtro_socket ("level_add 3");
         }
     elseif($command == 'level_down') {
         $json=firtro_socket ("level_add -1");
+        }
+    elseif($command == 'level_down_2') {
+        $json=firtro_socket ("level_add -2");
         }
     elseif($command == 'level_down_3') {
         $json=firtro_socket ("level_add -3");
