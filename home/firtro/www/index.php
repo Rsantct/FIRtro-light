@@ -121,8 +121,8 @@
             </div>
 
             <div class="ui-grid-a fitted">
-              <div class="ui-block-a"><input id="level_down_3"  name="level_down_3" type="submit" value="VOL -"  data-icon="minus" /></div>
-              <div class="ui-block-b"><input id="level_up_3"    name="level_up_3"   type="submit" value="VOL +"  data-icon="plus"  /></div>
+              <div class="ui-block-a"><input id="level_down_2"  name="level_down_2" type="submit" value="VOL -"  data-icon="minus" /></div>
+              <div class="ui-block-b"><input id="level_up_2"    name="level_up_2"   type="submit" value="VOL +"  data-icon="plus"  /></div>
             </div>
 
         </div>
