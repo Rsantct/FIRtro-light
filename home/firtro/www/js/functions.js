@@ -265,7 +265,7 @@ String.prototype.rpad = function(padString, length) {
 function update_controls () {
 
     // Nombre del altavoz en el título de la página
-    $("[name='tittle']").text("FIRtro [" + $php_data["loudspeaker"] + "]");
+    $("[name='page_header']").text("FIRtro [" + $php_data["loudspeaker"] + "]");
     var $first_item=true;
 
     // Página activa del documento
