@@ -84,7 +84,7 @@
     <div data-role="page" class="type-interior" id="light_page">
 
         <div data-role="header" data-theme="d">
-            <h1>FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#info_page" data-icon="info" data-iconpos="notext" class="ui-btn-left">INFO PAGE</a>
             <input name="reboot" value="REBOOT" type="submit" data-icon="alert" data-iconpos="notext" class="ui-btn-right"/>
         </div>
@@ -137,7 +137,7 @@
     <div data-role="page" class="type-interior" id="level_page"> <!--class="type-home"-->
 
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#light_page"   data-icon="grid" data-iconpos="notext" data-direction="reverse">LIGHT PAGE</a>
             <a href="#config_page"  data-icon="gear" data-iconpos="notext" data-direction="reverse" name="config">CONFIG</a>
         </div><!-- /header -->
@@ -234,7 +234,7 @@
     <div data-role="page" class="type-interior" id="info_page">
         <!-- HEADER -->
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
         </div>
         <!--
@@ -356,7 +356,7 @@
     <div data-role="page" class="type-interior" id="drc_page">
 
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <a href="#config_page" data-icon="gear" data-iconpos="notext" data-direction="reverse" name="config">Config</a>
         </div><!-- /header -->
@@ -440,7 +440,7 @@
     <div data-role="page" class="type-interior" id="tone_page">
 
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <a href="#config_page" data-icon="gear" data-iconpos="notext" data-direction="reverse" name="config">Config</a>
         </div><!-- /header -->
@@ -521,7 +521,7 @@
             
     <div data-role="page" class="type-interior" id="loudness_page">
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <a href="#config_page" data-icon="gear" data-iconpos="notext" data-direction="reverse" name="config">Config</a>
         </div><!-- /header -->
@@ -596,7 +596,7 @@
     <div data-role="page" class="type-interior" id="inputs_page">
         
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <a href="#config_page" data-icon="gear" data-iconpos="notext" data-direction="reverse" name="config">Config</a>
         </div><!-- /header -->
@@ -656,7 +656,7 @@
     <div data-role="page" class="type-interior" id="presets_page">
         
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <a href="#config_page" data-icon="gear" data-iconpos="notext" data-direction="reverse" name="config">Config</a>
         </div><!-- /header -->
@@ -717,7 +717,7 @@
     <div data-role="page" class="type-interior" id="media_page">
         
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <a href="#config_page" data-icon="gear" data-iconpos="notext" data-direction="reverse" name="config">Config</a>
         </div><!-- /header -->
@@ -827,7 +827,7 @@
     <div data-role="page" class="type-interior" id="custom_page">
 
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <a href="#config_page" data-icon="gear" data-iconpos="notext" data-direction="reverse" name="config">Config</a>
         </div><!-- /header -->
@@ -900,7 +900,7 @@
     <div data-role="page" class="type-interior" id="config_page">
 
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">FIRtro</h1>
+            <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <a href="#config_page" data-icon="gear" data-iconpos="notext" data-direction="reverse" name="config">Config</a>
         </div><!-- /header -->
@@ -934,7 +934,7 @@
 
     <div data-role="page" id="cancel_config">
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">Config</h1>
+            <h1 name="page_header">Config</h1>
         </div><!-- /header -->
         <div data-role="content" style="text-align:center">
             <p>Cancel changes?</p>
@@ -946,7 +946,7 @@
     
     <div data-role="page" id="save_config">
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">Config</h1>
+            <h1 name="page_header">Config</h1>
         </div><!-- /header -->
         <div data-role="content" style="text-align:center">
             <p>Save changes?</p>
@@ -958,7 +958,7 @@
     
     <div data-role="page" id="theme_info">
         <div data-role="header" data-theme="d">
-            <h1 name="tittle">Config</h1>
+            <h1 name="page_header">Config</h1>
         </div><!-- /header -->
         <div data-role="content" style="text-align:center">
             <p>To load the default theme you must save it, and then reload the page</p>
