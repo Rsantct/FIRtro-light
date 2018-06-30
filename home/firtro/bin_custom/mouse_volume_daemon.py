@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    v0.3beta
     Cutre script para gobernar el volumen de FIRtro mediante un ratón
 
     Uso:
@@ -17,7 +16,7 @@
 
     Notas:
 
-    Permisos de acceso: el usuario 'firtro' debe incluirse en el grupo
+    1) Permisos de acceso: el usuario 'firtro' debe incluirse en el grupo
     que tiene acceso a /dev/input/xxxx
     (está definido en /etc/udev/rules.d/99-input.rules)
 
@@ -27,15 +26,47 @@
     crw-rw---- 1 root input 13, 64 Mar 19 20:53 event0
     crw-rw---- 1 root input 13, 63 Mar 19 20:53 mice
     crw-rw---- 1 root input 13, 32 Mar 19 20:53 mouse0
+    
+    2) Podemos configurar qué mouse se usará editando este script.
+    
+    3) También podemos deshabilitarlo en el escritorio para evitar accidentes
+    por ejemplo si es un segundo mouse dedicado al volumen de un FIRtro con escritorio.
 
 """
-# v0.2beta: beeps con un synth de SoX (play)
-# v0.3beta: beeps en un aviso.wav con aplay
+# v0.2beta: Beeps con un synth de SoX (play)
+# v0.3beta: Beeps en un aviso.wav con aplay
+# v0.4beta: Seleccionar un mouse y deshabilitarlo en el escritorio.
 
 import sys, os, time
 import subprocess as sp
 import binascii
 #import struct
+
+
+
+########  CONFIGURACIONES DEL MOUSE #########
+#
+# 1.- Para ver los dev mouses que tenemos y seleccionarlo aquí:
+#   ls -l /dev/input/
+#   Nota: 'mice' es el genérico
+#
+MYMOUSE="/dev/input/mice"
+#
+# 2.- Para ver el id del mouse en el escritorio y poder deshabilitarlo:
+# https://askubuntu.com/questions/65951/how-to-disable-the-touchpad/67724#67724
+# ~$ xinput --list
+# ⎡ Virtual core pointer                    	id=2	[master pointer  (3)]
+# ⎜   ↳ Virtual core XTEST pointer              	id=4	[slave  pointer  (2)]
+# ⎜   ↳ USB Optical Mouse                       	id=8	[slave  pointer  (2)]  <-- P.EJ. ESTE
+# ⎜   ↳ MLK Trust Keyboard                      	id=10	[slave  pointer  (2)]
+#
+# ~$ xinput set-prop 8 "Device Enabled" 0
+# In Ubuntu versions >12.04 you can also directly disable via
+# ~$ xinput --disable 8
+#
+os.system('xinput set-prop 8 "Device Enabled" 0')
+
+
 
 def getMouseEvent():
     """
