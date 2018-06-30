@@ -64,7 +64,7 @@ MYMOUSE="/dev/input/mice"
 # In Ubuntu versions >12.04 you can also directly disable via
 # ~$ xinput --disable 8
 #
-os.system("xinput --disable 8")
+os.system('xinput set-prop 8 "Device Enabled" 0')
 
 
 
