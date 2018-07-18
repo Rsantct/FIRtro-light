@@ -167,11 +167,8 @@
     }
 
     # Nuevos comandos REBOOT/POWEROFF para FIRtro-Light, úsese carefully
-    if($command == 'reboot') {
-        $json=firtro_socket ("exec reboot.sh");
-    }
-    elseif($command == 'poweroff') {
-        $json=firtro_socket ("exec poweroff.sh");
+    if($command == 'poweroff_reboot') {
+        $json=firtro_socket ("exec poweroff_reboot.sh");
     }
     elseif($command == 'level_up') {
         $json=firtro_socket ("level_add 1");
