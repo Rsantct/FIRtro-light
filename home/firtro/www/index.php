@@ -25,6 +25,10 @@
         Nueva sección $(document).on('pageinit', '#info_page'... ...
         Nueva sección $(document).on('pageinit', '#light_page'... ...
 
+    config/config.ini
+        [misc]
+        ...
+        poweroff_reboot_button = "reboot" o bien "poweroff
 -->
 
 <html>
@@ -86,7 +90,7 @@
         <div data-role="header" data-theme="d">
             <h1 name="page_header">FIRtro</h1>
             <a href="#info_page" data-icon="info" data-iconpos="notext" class="ui-btn-left">INFO PAGE</a>
-            <input name="reboot" value="REBOOT" type="submit" data-icon="alert" data-iconpos="notext" class="ui-btn-right"/>
+            <input name="poweroff_reboot" value="POWEROFF_REBOOT" type="submit" data-icon="alert" data-iconpos="notext" class="ui-btn-right"/>
         </div>
 
         <div class="content">
