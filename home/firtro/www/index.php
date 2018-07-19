@@ -81,9 +81,14 @@
 
 <body>
 
-    <!-- *************************** -->
-    <!-- ** Página principal LIGHT** -->
-    <!-- *************************** -->
+    <!-- ***************************
+         ** Página principal LIGHT**
+         ***************************
+             1                2
+        1    VOLUMEN          PRESET
+        2    INPUT
+        3    LOUDNESS         SYSEQ
+    -->
 
     <div data-role="page" class="type-interior" id="light_page">
 
@@ -96,12 +101,13 @@
         <div class="content">
             
             <div data-role="content" id="level_display" class="display ui-corner-all">
-                <div class="ui-grid-solo" id="level_displayL1">Waiting...</div>
                 <div class="ui-grid-a">
-                    <div class="ui-block-a"   id="level_displayL51"></div><!--input-->
-                    <div class="ui-block-a"   id="level_displayL22"></div><!--loudness-->
+                    <div class="ui-block-a"   id="level_displayL11">Waiting...</div><!--volume-->
+                    <div class="ui-block-b"   id="level_displayL12"></div><!--preset-->
+                    <div class="ui-block-a"   id="level_displayL21"></div><!--input-->
+                    <div class="ui-block-a"   id="level_displayL31"></div><!--loudness-->
                     <div class="ui-block-b"   id="level_displayL32" style="max-width:160px; min-width:130px"></div><!--syseq-->
-                    <div class="ui-grid-solo" id="level_displayL6"></div><!--warnings-->
+                    <div class="ui-grid-solo" id="level_displayL99"></div><!--warnings-->
                 </div>
             </div>
             
