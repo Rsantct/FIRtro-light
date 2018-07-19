@@ -334,17 +334,28 @@ function update_controls () {
             break;
 
         case 'light_page':
-        
+
+            //      1                2
+            // 1    VOLUMEN          PRESET
+            // 2    INPUT
+            // 3    LOUDNESS         SYSEQ
 
             if ($php_data['muted'] == true) {
-                $("#level_displayL1").text("volume: " + $php_data["level"] + " dB (MUTED)");
+                $("#level_displayL11").text("volume: " + $php_data["level"] + " dB (MUTED)");
             }
             else {
-                $("#level_displayL1").text("VOLUME " + $php_data["level"] + " dB"); 
+                $("#level_displayL11").text("VOLUME " + $php_data["level"] + " dB"); 
             }
-                        
-            if ($php_data['loudness_track']==true)  $("#level_displayL22").text("LOUDNS: ON");
-            else                                    $("#level_displayL22").text("loudns: off");
+            
+            // muestra "Preset: xxxx" solo si se ha definido alguno
+            tmp = $php_data["preset"];
+            if (tmp)    $("#level_displayL12").text("Preset: " + tmp);
+            else        $("#level_displayL12").text("");
+            
+            $("#level_displayL21").text("Input: " + $php_data["input_name"]);
+            
+            if ($php_data['loudness_track']==true)  $("#level_displayL31").text("LOUDNS: ON");
+            else                                    $("#level_displayL31").text("loudns: off");
                         
             if ($php_data["system_eq"] == false) {
                 $system_eq = "OFF";
@@ -355,19 +366,17 @@ function update_controls () {
                 $("#level_displayL32").text("SYSEQ: ON");
             }
             
-            $("#level_displayL51").text("Input: " +          $php_data["input_name"]);
-            
             // Array de warnings
             if ($php_data['warnings'] != "") {
                 $php_data['warnings'].forEach(function(item) {
                 if ($first_item) {
-                    $("#level_displayL6").text("Warning: "+item);
+                    $("#level_displayL99").text("Warning: "+item);
                     $first_item=false;
                 }
-                else $("#level_displayL6").append("<br/>"+item);
+                else $("#level_displayL99").append("<br/>"+item);
                 });    
             }
-            else $("#level_displayL6").text("");
+            else $("#level_displayL99").text("");
 
             break;
 
