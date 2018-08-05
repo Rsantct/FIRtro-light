@@ -13,4 +13,5 @@ rm -f master.zip
 # Copia los scripts de bin_custom y las url de emisoras de radio
 cd /home/firtro/
 cp tmp/FIRtro-light-master/home/firtro/bin_custom/*   bin_custom/
+chmod +x bin_custom/*
 cp tmp/FIRtro-light-master/home/firtro/audio/radio_urls   audio/
