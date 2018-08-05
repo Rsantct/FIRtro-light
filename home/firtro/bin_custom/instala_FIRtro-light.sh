@@ -6,6 +6,7 @@
 cd /home/firtro/tmp
 rm -f master.zip
 wget https://github.com/Rsantct/FIRtro-light/archive/master.zip
+rm -rf FIRtro-light-master
 unzip master.zip
 rm -f master.zip
 
