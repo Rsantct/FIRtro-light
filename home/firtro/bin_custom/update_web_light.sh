@@ -12,7 +12,7 @@ wget https://raw.githubusercontent.com/Rsantct/FIRtro-light/master/home/firtro/w
 cd ../php
 wget https://raw.githubusercontent.com/Rsantct/FIRtro-light/master/home/firtro/www/php/functions.php
 
-cd ~/bin
+cd /home/firtro/bin
 rm -f poweroff_reboot.sh
 wget https://raw.githubusercontent.com/Rsantct/FIRtro-light/master/home/firtro/bin/poweroff_reboot.sh
 chmod +x poweroff_reboot.sh
