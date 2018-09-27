@@ -1,34 +1,57 @@
 <!DOCTYPE html>
 
 <!--
+    ----------------------------------------
+    --- VERSIONES DE LA WEB DE CONTROL: ----
+    ----------------------------------------
     v2.0 Página INFO
     La página Info presenta la información más habitual en una sola página:
         - principales ajustes del audio
         - los metadata del player en curso
         - una botonera de control "comprimida"
-            
-    V2.1 FIRtro-LIGHT
-    Se pone como página inicial una botonera y un display simplificados para un uso básico.
-    Se rota entre las páginas con botones en la esquina sup izq  
-	Light_page >> Info_page >> Main_page >>  Light_page
-    
-    Archivos afectados:
 
-    php/functions.php:
+    v2.1 Página DRC
+    Nueva botonera dinámica con los descriptivos de los filtros
+
+    v2.2 FIRtro-LIGHT
+    Se pone como página inicial una botonera y un display simplificados para un uso básico.
+    Se rota entre las páginas con botones en la esquina sup izq
+	Light_page >> Info_page >> Main_page >>  Light_page
+
+    ------------------------------------
+    -------- Archivos afectados: -------
+    ------------------------------------
+
+    --- index.php
+    v2.0
+        Nueva página #info_page
+    v2.1
+        Cambia la botonera en #drc_page
+    v2.2
+        Nueva página #light_page
+
+    --- php/functions.php:
+    v2.0
         Funciones de control de los player
         Nuevos comandos para la botonera comprimida de info_page
+    v2.1
+        Cambia la evaluación de elseif($command == 'drc')
+    v2.2
         Nuevos comandos reboot y poweroff para FIRtro-light
 
-    js/functions.js:
+    --- js/functions.js:
+    v2.0
         Nueva sección case "info_page" en update_controls con variables dedicadas
-        Nueva sección case "light_page" en update_controls con variables "level_displayLxx" dedicadas
         Nueva sección $(document).on('pageinit', '#info_page'... ...
+    v2.1
+        Código para la nueva botonera dinámica en  $(document).on('pageinit', '#drc_page'... ...
+    v2.2
+        Nueva sección case "light_page" en update_controls con variables "level_displayLxx" dedicadas
         Nueva sección $(document).on('pageinit', '#light_page'... ...
 
-    config/config.ini
-        [misc]
-        ...
-        poweroff_reboot_button = "reboot" o bien "poweroff
+    --- config/config.ini
+    v2.2
+        [misc] nueva opción     poweroff_reboot_button = "reboot" o bien "poweroff
 -->
 
 <html>
@@ -99,7 +122,7 @@
         </div>
 
         <div class="content">
-            
+
             <div data-role="content" id="level_display" class="display ui-corner-all">
                 <div class="ui-grid-a">
                     <div class="ui-block-a"   id="level_displayL11">Waiting...</div><!--volume-->
@@ -110,7 +133,7 @@
                     <div class="ui-grid-solo" id="level_displayL99"></div><!--warnings-->
                 </div>
             </div>
-            
+
             <!-- aqui reutilizamos los botones de la pagina custom original -->
             <div class="ui-grid-b fitted">
               <div class="ui-block-a"><input id="customL_1" name="custom_1" type="submit" value="1" /></div>
@@ -136,7 +159,7 @@
             </div>
 
         </div>
-        
+
     </div>
 
 
@@ -301,7 +324,7 @@
             </div>
         </div>
 
-        <!-- FOOTER 
+        <!-- FOOTER
         Se incorpora una BOTONERA para funciones comunes: presets, inputs, playback_control, audio_control
         -->
         <div data-role="footer" class="footer-docs" data-theme="d">
@@ -357,7 +380,7 @@
             </div>
         </div><!-- /footer -->
 
-    </div><!-- /Página INFO --> 
+    </div><!-- /Página INFO -->
 
     <!-- **************** -->
     <!-- ** Página DRC ** -->
@@ -370,43 +393,48 @@
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <a href="#config_page" data-icon="gear" data-iconpos="notext" data-direction="reverse" name="config">Config</a>
         </div><!-- /header -->
-                  
+
         <div data-role="content">
 
             <div class="content-primary">
+
+                <!-- Display -->
                 <div data-role="content" id="drc_display" class="display ui-corner-all">
-                Waiting...
+                    Waiting...
                 </div>
                 <p></p>
+
+                <!-- Switches -->
                 <div class="containing-element">
-                  <select name="syseq_switch" id="syseq_switch" data-role="slider">
-                    <option value="off">SysEQ OFF</option>
-                    <option value="on">SysEQ ON</option>
-                  </select>
-                  <select name="peq_switch" id="peq_switch" data-role="slider">          <!-- *** PEQ *** -->
-                    <option value="off">PEQ OFF</option>
-                    <option value="on">PEQ ON</option>
-                  </select>
+
+                    <!-- Switch SysEQ -->
+                    <select name="syseq_switch" id="syseq_switch" data-role="slider">
+                        <option value="off">SysEQ OFF</option>
+                        <option value="on">SysEQ ON</option>
+                    </select>
+                    <!-- Switch PEQ -->
+                    <select name="peq_switch" id="peq_switch" data-role="slider">
+                        <option value="off">PEQ OFF</option>
+                        <option value="on">PEQ ON</option>
+                    </select>
+
                 </div>
+
                 <hr>
-                  <div class="ui-grid-a">
-                    <div class="ui-block-a">
-                      <input name="drc0" type="submit" id="drc0" value="DRC 0" data-icon="grid" />
-                    </div>
-                    <div class="ui-block-b">
-                      <input name="drc1" type="submit" id="drc1" value="DRC 1" data-icon="grid" data-iconpos="right" />
-                    </div>
-                    <div class="ui-block-a">
-                      <input name="drc2" type="submit" id="drc2" value="DRC 2" data-icon="grid" />
-                    </div>
-                    <div class="ui-block-b">
-                      <input name="drc3" type="submit" id="drc3" value="DRC 3" data-icon="grid" data-iconpos="right" />
-                    </div>
-                  </div>
-                  <div style="text-align:center;">L Channel</div>
-                  <div id="syseq_l_chartdiv" style="height:200px; width:100%; margin: 0 auto; text-align:center;"></div>
-                  <div style="text-align:center;">R Channel</div>
-                  <div id="syseq_r_chartdiv" style="height:200px; width:100%; margin: 0 auto; text-align:center;"></div>
+
+                <!-- NUEVA Botonera dinámica de DRCs (antes eran 4 botones)-->
+                 <div id="drc_radiodiv">
+                   <fieldset data-role="controlgroup" id="drc_select_cg" class="center-controlgroup">
+                   </fieldset>
+                 </div>
+
+                <!-- Grafica L -->
+                <div style="text-align:center;">L Channel</div>
+                <div id="syseq_l_chartdiv" style="height:200px; width:100%; margin: 0 auto; text-align:center;"></div>
+                <!-- Grafica R -->
+                <div style="text-align:center;">R Channel</div>
+                <div id="syseq_r_chartdiv" style="height:200px; width:100%; margin: 0 auto; text-align:center;"></div>
+
             </div> <!--/content-primary -->
 
             <div class="content-secondary">
@@ -478,7 +506,7 @@
                   </div>
                   <div class="ui-grid-solo">
                       <input name="eq_flat" type="submit" id="eq_flat" value="Flat" data-icon="delete" />
-                  </div> 
+                  </div>
                   <div id="tone_chartdiv" style="height:200px; width:100%; margin: 0 auto; text-align:center;"></div>
 
                 <p></p>
@@ -488,7 +516,7 @@
                 <div id="bal_div">
                 <input type="range" name="bal_slider" id="bal_slider" value="0" min="-12" max="12" data-highlight="false" readonly />
                 </div>
-                 
+
             </div> <!--/content-primary -->
 
             <div class="content-secondary">
@@ -528,7 +556,7 @@
     <!-- ********************* -->
     <!-- ** Página Loudness ** -->
     <!-- ********************* -->
-            
+
     <div data-role="page" class="type-interior" id="loudness_page">
         <div data-role="header" data-theme="d">
             <h1 name="page_header">FIRtro</h1>
@@ -556,7 +584,7 @@
                       <input name="loud_ref_down" type="submit" id="loud_ref_down" value="Level Ref" data-icon="minus" />
                     </div>
                     <div class="ui-block-b">
-                      <input name="loud_ref_up" type="submit" id="loud_ref_up" value="Level Ref" data-icon="plus" data-iconpos="right" />                  
+                      <input name="loud_ref_up" type="submit" id="loud_ref_up" value="Level Ref" data-icon="plus" data-iconpos="right" />
                     </div>
                   </div>
                   <div class="ui-grid-solo">
@@ -564,7 +592,7 @@
                   </div>
                   <div id="loudeq_chartdiv" style="height:200px; width:100%; margin: 0 auto; text-align:center;"></div>
             </div> <!--/content-primary -->
-                     
+
             <div class="content-secondary">
                 <div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="d">
                         <h3>More...</h3> <!--Subtitulo para cuando esta contraido-->
@@ -602,9 +630,9 @@
     <!-- ******************* -->
     <!-- ** Página Inputs ** -->
     <!-- ******************* -->
-        
+
     <div data-role="page" class="type-interior" id="inputs_page">
-        
+
         <div data-role="header" data-theme="d">
             <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
@@ -623,7 +651,7 @@
                 </fieldset>
               </div>
             </div> <!--/content-primary -->
-                     
+
             <div class="content-secondary">
                 <div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="d">
                         <h3>More...</h3> <!--Subtitulo para cuando esta contraido-->
@@ -657,14 +685,14 @@
         </div><!-- /footer -->
 
     </div><!-- /Página Inputs -->
-    
-    
+
+
     <!-- ********************* -->
     <!-- ** Página PRESETS  ** -->
     <!-- ********************* -->
-        
+
     <div data-role="page" class="type-interior" id="presets_page">
-        
+
         <div data-role="header" data-theme="d">
             <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
@@ -684,7 +712,7 @@
               </div>
 
             </div> <!--/content-primary -->
-                     
+
             <div class="content-secondary">
                 <div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="d">
                         <h3>More...</h3> <!--Subtitulo para cuando esta contraido-->
@@ -725,7 +753,7 @@
     <!-- ****************** -->
 
     <div data-role="page" class="type-interior" id="media_page">
-        
+
         <div data-role="header" data-theme="d">
             <h1 name="page_header">FIRtro</h1>
             <a href="#level_page" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
@@ -733,7 +761,7 @@
         </div><!-- /header -->
 
         <div data-role="content">
-        
+
             <div class="content-primary" >
                 <div data-role="content" id="media_display" class="display ui-corner-all">
                 Waiting...
@@ -782,7 +810,7 @@
                         <div class="ui-block-c"></div>
                     </div>
                 </div>
-                
+
                 <!-- <div data-role="collapsible" data-theme="b" data-content-theme="d" data-collapsed="true"> -->
                 <div data-role="collapsible" data-theme="b" data-collapsed="true">
                 <h3>Various</h3>
@@ -846,7 +874,7 @@
             <div class="content-primary" >
                 <!--
                 <div data-role="content" id="custom_display" class="display ui-corner-all">
-                
+
                 </div>
                 <p></p>
                 -->
@@ -902,7 +930,7 @@
         </div><!-- /footer -->
 
     </div><!-- /Página Custom -->
-  
+
     <!-- ******************* -->
     <!-- ** Página Config ** -->
     <!-- ******************* -->
@@ -936,8 +964,8 @@
             </div>
         </div><!-- /footer -->
 
-    </div><!-- /Página Config --> 
-    
+    </div><!-- /Página Config -->
+
     <!-- ************** -->
     <!-- ** Dialogos ** -->
     <!-- ************** -->
@@ -951,9 +979,9 @@
             <input name="cancel_config" type="submit" value="Yes" data-icon="check" data-inline="true"/>
             <a data-rel="back" data-role="button" data-icon="delete" data-inline="true">No</a>
         </div><!-- /content -->
-        
+
     </div><!-- /Página cancel_config -->
-    
+
     <div data-role="page" id="save_config">
         <div data-role="header" data-theme="d">
             <h1 name="page_header">Config</h1>
@@ -963,9 +991,9 @@
             <input name="save_config" type="submit" value="Yes" data-icon="check" data-inline="true" />
             <a data-rel="back" data-role="button" data-icon="delete" data-inline="true">No</a>
         </div><!-- /content -->
-        
+
     </div><!-- /Página save_config -->
-    
+
     <div data-role="page" id="theme_info">
         <div data-role="header" data-theme="d">
             <h1 name="page_header">Config</h1>
@@ -974,7 +1002,7 @@
             <p>To load the default theme you must save it, and then reload the page</p>
             <a data-rel="back" data-role="button" data-icon="check" data-inline="true">OK</a>
         </div><!-- /content -->
-        
+
     </div><!-- /Página theme_info -->
 </body>
 </html>
