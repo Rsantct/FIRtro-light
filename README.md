@@ -1,3 +1,7 @@
+# IMPORTANTE
+
+Este proyecto es **OBSOLETO** pero hay aquí alguna información de utilidad.
+
 # FIRtro-light
 
 Un FIRtro simplificado para máquinas pequeñas
