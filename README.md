@@ -1,4 +1,4 @@
-# OBSOLETO - OBSOLETO - OBSOLETO - OBSOLETO - OBSOLETO - OBSOLETO
+# OBSOLETO - OBSOLETO - OBSOLETO
 
 Este proyecto es **OBSOLETO** pero hay aquí alguna información de utilidad, en la carpeta `/doc` y en la `Wiki`.
 
