@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# (i) se necesita el binario 'usbrelay' en el mismo directorio que este script
+# (i)   Se necesita el binario 'usbrelay' en el path.
+#       Recientemente DEBIAN dispone del paquete 'usbrelay'
+#       En caso contrario hay que compilarlo usando la libreria hidraw:
+#           https://github.com/darrylb123/usbrelay
+#       Reiniciar despues de instalar para que funcione.
 
-# Basado en el binario 'usbrelay', compilado con la libreria hidraw, ver detalles en:
-# https://github.com/darrylb123/usbrelay
 # El binario 'usbrelay':
 #   - Sin argumentos muestra el estado de los reles.
 #   - Con argumentos BITFT_n=x modifica los reles.
@@ -23,7 +25,7 @@ if [[ $1 ]]; then
     if [[ $1 == "on" || $1 == "1" ]]; then
         tmp="BITFT_1=1"
     fi
-    cmd="$HOME/bin_custom/usbrelay "$tmp
+    cmd="/usr/bin/usbrelay "$tmp
     # opc.1 para ejecución en local:
     $cmd
     # opc.2 para ejecución en máquina remota:
@@ -31,7 +33,7 @@ if [[ $1 ]]; then
 fi
 
 # Consultamos el estado del relé:
-cmd="$HOME/bin_custom/usbrelay"
+cmd="/usr/bin/usbrelay"
 # opc.1 para ejecución en local:
 eval $($cmd)
 # opc.2 para ejecución en máquina remota:
